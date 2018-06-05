@@ -13,7 +13,6 @@ app.once('ready', () => {
     width: 800,
     // Set the initial height to 400px
     height: 600,
-    title: 'Chester Desktop',
     // set the title bar style
     titleBarStyle: 'hidden-inset',
     // set the background color to black
