@@ -1,0 +1,22 @@
+{
+  "name": "chester-desktop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^2.0.2"
+  },
+  "dependencies": {
+    "ansi_up": "^3.0.0",
+    "nedb": "^1.8.0",
+    "wdio-mocha-framework": "^0.5.13",
+    "webdriverio": "^4.12.0"
+  }
+}
