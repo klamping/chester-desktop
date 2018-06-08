@@ -1,6 +1,5 @@
 const ipc = require('electron').ipcMain
 const { spawn } = require('child_process');
-// const path = require('path');
 
 ipc.on('run-test', function (event, folderPath, command) {
   event.sender.send('test-status', 'started')
@@ -11,16 +10,20 @@ ipc.on('run-test', function (event, folderPath, command) {
   //   : [];
 
   // const currentDir = path.join(process.cwd(), __dirname);
+  // console.log('test-runner.js :13', currentDir);
 
-  console.log('test-runner.js :15', folderPath);
+  // const run = spawn('node', ['/Users/klamping/Sites/chester-desktop/src/main/launch-test.js'], {
+  //   cwd: folderPath
+  // });
 
-  const run = spawn('./node_modules/.bin/wdio', [], {
-    cwd: folderPath
+  const run = spawn(command, [], {
+    cwd: folderPath,
+    shell: true
   });
 
   run.stdout.on('data', (data) => {
     console.log('test-runner.js :25', data.toString('utf8'));
-    event.sender.send('test-log', data);
+    event.sender.send('test-log', data.toString('utf8'));
   });
 
   run.stderr.on('data', (data) => {
@@ -37,4 +40,5 @@ ipc.on('run-test', function (event, folderPath, command) {
       event.sender.send('test-status', 'Run Successful');
     }
   });
+  console.log('test-runner.js :45');
 })

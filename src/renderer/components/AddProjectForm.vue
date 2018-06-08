@@ -17,7 +17,7 @@
         addingProject: false,
         name: '',
         path: '',
-        command: 'wdio wdio.conf.js'
+        command: './node_modules/.bin/wdio'
       }
     },
     methods: {
