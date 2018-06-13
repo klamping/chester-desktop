@@ -15,7 +15,7 @@ ipc.on('run-test', function (event, folderPath, command) {
   });
 
   run.stderr.on('data', (data) => {
-    event.sender.send('test-log', data);
+    event.sender.send('test-log', data.toString('utf8'));
   });
 
   run.on('close', (code) => {

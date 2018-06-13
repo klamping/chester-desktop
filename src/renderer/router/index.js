@@ -8,7 +8,14 @@ export default new Router({
     {
       path: '/',
       name: 'landing-page',
-      component: require('@/components/LandingPage').default
+      component: require('@/components/LandingPage').default,
+      children: [
+        {
+          path: 'project/:id',
+          name: 'project',
+          component: require('@/components/Project').default
+        }
+      ]
     },
     {
       path: '*',

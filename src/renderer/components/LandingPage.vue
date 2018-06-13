@@ -1,39 +1,36 @@
 <template>
-  <div id="wrapper">
-    <AddProjectForm></AddProjectForm>
-    <ProjectList></ProjectList>
-    <div id="runner">
-      <div id="info-status">Test Status: <span>{{status}}</span></div>
-      <div id="info-log" v-html="log"></div>
-    </div>
+  <div class="layout">
+    <Layout :style="{minHeight: '100vh'}">
+      <Sider collapsible :collapsed-width="78">
+        <ProjectList></ProjectList>
+        <AddProjectForm></AddProjectForm>
+      </Sider>
+      <Layout>
+        <router-view></router-view>
+        <div id="info-status">Test Status: <span>{{status}}</span></div>
+        <Term></Term>
+      </Layout>
+    </Layout>
   </div>
 </template>
 
 <script>
   import ProjectList from './ProjectList'
+  import SystemInformation from './LandingPage/SystemInformation'
   import AddProjectForm from './AddProjectForm'
-  import { default as AnsiUp } from 'ansi_up';
+  import Term from './Term'
 
   export default {
     name: 'landing-page',
-    components: { ProjectList, AddProjectForm },
+    components: { ProjectList, AddProjectForm, SystemInformation, Term },
     data () {
       return {
-        status: '',
-        log: ''
+        status: ''
       }
     },
     created () {
       this.$electron.ipcRenderer.on('test-status', (e, status) => {
         this.status = status;
-      });
-
-      // eslint-disable-next-line new-parens, new-cap
-      const au = new AnsiUp();
-
-      this.$electron.ipcRenderer.on('test-log', (e, log) => {
-        const html = au.ansi_to_html(log);
-        this.log += `${html}<br />`;
       });
     }
   }

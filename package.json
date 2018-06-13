@@ -58,13 +58,15 @@
   "dependencies": {
     "ansi_up": "^3.0.0",
     "execa": "^0.10.0",
+    "iview": "^2.14.2",
     "nedb": "^1.8.0",
     "shelljs": "^0.8.2",
     "vue": "^2.3.3",
     "vue-electron": "^1.0.6",
     "vue-router": "^2.5.3",
     "vuex": "^2.3.1",
-    "webdriverio": "^4.12.0"
+    "webdriverio": "^4.12.0",
+    "xterm": "^3.4.1"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",

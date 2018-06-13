@@ -1,28 +1,21 @@
 <template>
-  <ul id="project-list">
-    <li v-for="project in projects">
-      <button @click="deleteProject(project)">x</button>
-      {{project.name}}
-      <button @click="runTest(project)">Run Test</button>
-    </li>
-  </ul>
+  <Menu theme="dark" width="auto" v-bind:active-name="$route.params.id">
+    <MenuItem v-for="project in projects" :key="project._id" v-bind:name="project._id">
+      <router-link :to="{ name: 'project', params: { id: project._id }}">
+        {{project.name}}
+      </router-link>
+    </MenuItem>
+  </Menu>
 </template>
 
 <script>
   import { mapState } from 'vuex'
 
   export default {
-    computed: mapState({
-      projects: state => state.Projects.all
-    }),
-
-    methods: {
-      runTest (project) {
-        this.$electron.ipcRenderer.send('run-test', project.path, project.command);
-      },
-      deleteProject (project) {
-        this.$store.commit('remove', project)
-      }
+    computed: {
+      ...mapState({
+        projects: state => state.Projects.all
+      })
     },
 
     created () {
@@ -30,3 +23,15 @@
     }
   }
 </script>
+
+<style>
+  .ivu-menu-vertical .ivu-menu-item {
+    position: relative;
+    padding: 0;
+  }
+  .ivu-menu-item a {
+    color: inherit;
+    padding: 14px 24px;
+    display: block;
+  }
+</style>
