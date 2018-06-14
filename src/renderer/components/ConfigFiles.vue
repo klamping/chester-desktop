@@ -5,7 +5,7 @@
     </div>
 
     <ButtonGroup v-if="configs">
-      <Button v-for="config in configs" v-bind:type="(selectedConfig === config) ? 'primary' : 'default'" :key="config" @click="selectedConfig = config">{{config}}</Button>
+      <Button v-for="config in configs" v-bind:type="(selectedConfig === config) ? 'primary' : 'default'" :key="config" @click="setConfig(config)">{{config}}</Button>
     </ButtonGroup>
   </div>
 </template>
@@ -43,8 +43,13 @@
           } else {
             this.configs = files.filter(file => file.endsWith('.conf.js'));
             this.selectedConfig = this.configs[0]
+            this.$emit('updated', this.selectedConfig);
           }
         })
+      },
+      setConfig (config) {
+        this.selectedConfig = config;
+        this.$emit('updated', config);
       }
     }
   }

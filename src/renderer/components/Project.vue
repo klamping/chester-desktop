@@ -9,24 +9,26 @@
     </div>
 
     <template v-if="project">
-      <Header :style="{background: '#fff', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
+      <Header class="project-header">
         <h1>{{project.name}}</h1>
+        <Button @click="updatePath()" type="text" class="project-path">{{project.path}}</Button>
         <Button v-on:click="deleteProject" type="error" class="delete">Delete Project</Button>
       </Header>
       <Content :style="{padding: '16px'}">
 
         <Form :label-width="150">
-          <FormItem label="Project path">
-            <Button @click="updatePath()" type="ghost">{{project.path}}</Button>
-          </FormItem>
           <FormItem label="Project command">
             <Input type="text" v-model="project.command" size="large"/>
           </FormItem>
           <FormItem label="Config Files">
-            <ConfigFiles v-bind:path="project.path"/>
+            <ConfigFiles v-bind:path="project.path" @updated="updateConfigFile"/>
+          </FormItem>
+          <FormItem label="Spec Files" v-if="configFile">
+            <SpecFiles v-bind:path="project.path" v-bind:config="configPath" @updated="updateSpecs"/>
           </FormItem>
           <FormItem>
             <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Test</Button>
+            <p>{{generatedCommand}}</p>
           </FormItem>
         </Form>
 
@@ -39,18 +41,39 @@
 <script>
   import db from '../datastore'
   import ConfigFiles from './ConfigFiles'
+  import SpecFiles from './SpecFiles'
   import Term from './Term'
+  import path from 'path'
 
   export default {
     name: 'project',
-    components: { ConfigFiles, Term },
+    components: { ConfigFiles, SpecFiles, Term },
 
     data () {
       return {
         loading: false,
         project: null,
         error: null,
-        testRunning: false
+        testRunning: false,
+        configFile: null,
+        specs: []
+      }
+    },
+
+    computed: {
+      // a computed getter
+      generatedCommand: function () {
+        let command = `${this.project.command} ${this.configFile}`;
+
+        if (this.specs.length > 0) {
+          console.log('Project.vue :69');
+          command = `${command} --spec=${this.specs.join(',')}`
+        }
+
+        return command;
+      },
+      configPath: function () {
+        return path.join(this.project.path, this.configFile);
       }
     },
 
@@ -84,7 +107,7 @@
       },
       runTest () {
         this.testRunning = true;
-        this.$electron.ipcRenderer.send('run-test', this.project.path, this.project.command);
+        this.$electron.ipcRenderer.send('run-test', this.project.path, this.generatedCommand);
       },
       deleteProject () {
         this.$store.commit('remove', this.project._id);
@@ -96,16 +119,30 @@
         })[0];
 
         this.project.path = path;
+      },
+      updateConfigFile (file) {
+        this.configFile = file;
+      },
+      updateSpecs (specs) {
+        this.specs = specs;
       }
     }
   }
 </script>
 
 <style>
+  .project-header {
+    background: #fff;
+    box-shadow: 0 2px 3px 2px rgba(0,0,0,.1);
+    display: flex;
+    align-items: baseline;
+  }
+  .project-path {
+  }
   .delete {
     position: absolute;
-    top: 1.25em;
-    right: 1.25em;
+    right: 1em;
+    top: 1.2em;
   }
   .terminal {
     border-top: 1px solid #eee;
