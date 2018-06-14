@@ -1,5 +1,8 @@
 <template>
-  <div id="info-log" v-html="log"></div>
+  <div>
+    <div id="info-status">Test Status: <span>{{status}}</span></div>
+    <div id="info-log" v-html="log"></div>
+  </div>
 </template>
 
 <script>
@@ -10,7 +13,8 @@
     components: { },
     data () {
       return {
-        log: ''
+        log: '',
+        status: ''
       }
     },
     created () {
@@ -20,18 +24,27 @@
       this.$electron.ipcRenderer.on('test-log', (e, log) => {
         const html = au.ansi_to_html(log);
         this.log += `${html}<br />`;
+        // cheap hack to scroll to bottom of container
+        const container = document.getElementById('info-log');
+        container.scrollTop = container.scrollHeight + 200;
+      });
+
+      this.$electron.ipcRenderer.on('test-status', (e, status) => {
+        this.status = status;
       });
     }
   }
 </script>
 
 <style>
-  #info-log {
+  #info-status {
     position: absolute;
-    bottom: 0;
+    bottom: 20em;
+    right: 1em;
+  }
+  #info-log {
     width: 100%;
-    height: 20em;
     overflow: scroll;
-    border-top: 1px solid #eee;
+    height: 20em;
   }
 </style>

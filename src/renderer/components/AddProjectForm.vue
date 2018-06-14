@@ -1,12 +1,19 @@
 <template>
-  <div>
-    <button @click="addingProject = true" v-if="!addingProject">+ New Project</button>
-    <div v-if="addingProject">
-      <input type="text" required placeholder="Project Name" v-model="name">
-      <input type="text" required placeholder="Folder" v-model="path" @click="addPath()">
-      <input type="text" required placeholder="Command" v-model="command">
-      <button @click="addProject()">Add</button>
-    </div>
+  <div class="add-project-container">
+    <Button class="add-project" @click="addingProject = true" v-if="!addingProject" long type="dashed" icon="plus">Add New Project</Button>
+    <Form v-if="addingProject" class="project-form" label-position="top">
+      <FormItem label="Project Name">
+        <Input type="text" required v-model="name" />
+      </FormItem>
+      <FormItem label="Folder">
+        <Input type="text" required v-model="path" @click="addPath()" />
+      </FormItem>
+      <FormItem label="Command">
+        <Input type="text" required v-model="command" />
+      </FormItem>
+      <Button @click="addProject()" long type="success">Add</Button><br /><br />
+      <Button @click="addingProject = false" type="warning" long>Cancel</Button>
+    </Form>
   </div>
 </template>
 
@@ -37,3 +44,26 @@
     }
   }
 </script>
+
+<style>
+  .add-project-container {
+    margin-top: 1em;
+    border-top: 1px #aaa dashed;
+  }
+  .ivu-btn.add-project {
+    border: 0;
+    color: #ddd;
+    text-align: left;
+  }
+  .ivu-btn.add-project:hover {
+    color: #fff;
+    border-color: #5cadff;
+  }
+  .project-form {
+    color: #fff;
+    padding: 1em 10px;
+  }
+  .project-form.ivu-form .ivu-form-item-label {
+    color: #fff;
+  }
+</style>

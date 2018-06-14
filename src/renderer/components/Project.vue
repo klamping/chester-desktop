@@ -1,5 +1,5 @@
 <template>
-  <Layout :style="{minHeight: '50vh'}">
+  <Layout :style="{minHeight: '100vh'}">
     <div class="loading" v-if="loading">
       Loading...
     </div>
@@ -8,31 +8,49 @@
       {{ error }}
     </div>
 
-    <div v-if="project">
-      <Header :style="{background: '#fff', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">{{project.name}}</Header>
+    <template v-if="project">
+      <Header :style="{background: '#fff', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
+        <h1>{{project.name}}</h1>
+        <Button v-on:click="deleteProject" type="error" class="delete">Delete Project</Button>
+      </Header>
       <Content :style="{padding: '16px'}">
 
-        <p><strong>Project path</strong>: {{project.path}}</p>
-        <p><strong>Project command</strong>: {{project.command}}</p>
+        <Form :label-width="150">
+          <FormItem label="Project path">
+            <Button @click="updatePath()" type="ghost">{{project.path}}</Button>
+          </FormItem>
+          <FormItem label="Project command">
+            <Input type="text" v-model="project.command" size="large"/>
+          </FormItem>
+          <FormItem label="Config Files">
+            <ConfigFiles v-bind:path="project.path"/>
+          </FormItem>
+          <FormItem>
+            <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Test</Button>
+          </FormItem>
+        </Form>
 
-        <button v-on:click="runTest">Run Test</button>
       </Content>
-    </div>
+      <Term class="terminal"></Term>
+    </template>
   </Layout>
 </template>
 
 <script>
   import db from '../datastore'
+  import ConfigFiles from './ConfigFiles'
+  import Term from './Term'
 
   export default {
     name: 'project',
-    components: { },
+    components: { ConfigFiles, Term },
 
     data () {
       return {
         loading: false,
         project: null,
-        error: null
+        error: null,
+        testRunning: false
       }
     },
 
@@ -40,6 +58,11 @@
       // fetch the data when the view is created and the data is
       // already being observed
       this.fetchData()
+      this.$electron.ipcRenderer.on('test-status', (e, status) => {
+        if (status === 'Successful' || status === 'Failed') {
+          this.testRunning = false;
+        }
+      });
     },
 
     watch: {
@@ -60,19 +83,33 @@
         });
       },
       runTest () {
+        this.testRunning = true;
         this.$electron.ipcRenderer.send('run-test', this.project.path, this.project.command);
       },
-      deleteProject (project) {
-        this.$store.commit('remove', project)
+      deleteProject () {
+        this.$store.commit('remove', this.project._id);
+        this.$router.push('landing-page')
+      },
+      updatePath () {
+        const path = this.$electron.remote.dialog.showOpenDialog({
+          properties: ['openDirectory']
+        })[0];
+
+        this.project.path = path;
       }
     }
   }
 </script>
 
 <style>
-  #info-status {
+  .delete {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 1.25em;
+    right: 1.25em;
+  }
+  .terminal {
+    border-top: 1px solid #eee;
+    background: #eee;
+    width: 100%;
   }
 </style>

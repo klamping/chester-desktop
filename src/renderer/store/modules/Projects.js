@@ -8,12 +8,21 @@ const state = {
 const mutations = {
   add (state, project) {
     // todo validate data
-    state.all.push(project)
-    db.insert(project)
+    db.insert(project, function (err, newDoc) {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      state.all = [...state.all, newDoc];
+    });
   },
-  remove (state, project) {
-    state.all = state.all.filter(p => p !== project)
-    db.remove({ _id: project._id })
+  remove (state, projectId) {
+    db.remove({ _id: projectId }, {}, function (err, numRemoved) {
+      if (err) {
+        console.error(err);
+      }
+    });
+    state.all = state.all.filter(p => p._id !== projectId)
   },
   set (state, projects) {
     state.all = projects
