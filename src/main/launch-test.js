@@ -1,3 +1,5 @@
+process.chdir(process.cwd());
+
 var Launcher = require('webdriverio').Launcher;
 
 var wdio = new Launcher('./wdio.conf.js');
