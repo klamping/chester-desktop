@@ -7,14 +7,7 @@ const state = {
 
 const mutations = {
   add (state, project) {
-    // todo validate data
-    db.insert(project, function (err, newDoc) {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      state.all = [...state.all, newDoc];
-    });
+    state.all = [...state.all, project];
   },
   remove (state, projectId) {
     db.remove({ _id: projectId }, {}, function (err, numRemoved) {
@@ -30,6 +23,16 @@ const mutations = {
 }
 
 const actions = {
+  addProject ({ commit }, project) {
+    // todo validate data
+    db.insert(project, function (err, newDoc) {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      commit('add', newDoc)
+    });
+  },
   getProjects ({ commit }) {
     db.find({}, (err, projects) => {
       if (err) {

@@ -1,9 +1,5 @@
 <template>
   <Layout :style="{minHeight: '100vh'}">
-    <div class="loading" v-if="loading">
-      Loading...
-    </div>
-
     <div v-if="error" class="error">
       {{ error }}
     </div>
@@ -44,6 +40,7 @@
   import SpecFiles from './SpecFiles'
   import Term from './Term'
   import path from 'path'
+  import iView from 'iview';
 
   export default {
     name: 'project',
@@ -66,7 +63,6 @@
         let command = `${this.project.command} ${this.configFile}`;
 
         if (this.specs.length > 0) {
-          console.log('Project.vue :69');
           command = `${command} --spec=${this.specs.join(',')}`
         }
 
@@ -94,13 +90,14 @@
     },
     methods: {
       fetchData () {
-        this.error = this.post = null
-        this.loading = true
+        iView.LoadingBar.start();
+        this.error = this.project = null
         db.findOne({_id: this.$route.params.id}, (err, project) => {
-          this.loading = false
           if (err) {
             this.error = err.toString()
+            iView.LoadingBar.error();
           } else {
+            iView.LoadingBar.finish();
             this.project = project
           }
         });

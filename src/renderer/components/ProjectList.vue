@@ -28,10 +28,26 @@
   .ivu-menu-vertical .ivu-menu-item {
     position: relative;
     padding: 0;
+    transition: width .2s ease .2s;
+  }
+  .ivu-layout-sider-collapsed .ivu-menu-item {
+    transition: width .2s ease .2s;
   }
   .ivu-menu-item a {
     color: inherit;
-    padding: 14px 24px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     display: block;
+    white-space: nowrap;
+    padding: 14px 20px;
+  }
+  .ivu-layout-sider-collapsed .ivu-menu-item a {
+    text-overflow: clip;
+    overflow: hidden;
+  }
+  .ivu-layout-sider-collapsed .ivu-menu-item a:first-letter {
+    position: absolute;
+    color: #fff;
+    margin-right: 30em;
   }
 </style>
