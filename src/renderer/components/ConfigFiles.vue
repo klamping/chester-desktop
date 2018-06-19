@@ -12,6 +12,7 @@
 
 <script>
   import fs from 'fs';
+  import { mapState } from 'vuex';
 
   export default {
     name: 'ConfigFiles',
@@ -25,31 +26,33 @@
       }
     },
 
-    props: {
-      path: String
+    computed: {
+      ...mapState({
+        project: state => state.Project.project
+      })
     },
 
     created () {
       this.findConfigs();
     },
     watch: {
-      'path': 'findConfigs'
+      'project': 'findConfigs'
     },
     methods: {
       findConfigs () {
-        fs.readdir(this.path, (err, files) => {
+        fs.readdir(this.project.path, (err, files) => {
           if (err) {
             this.error = err.toString()
           } else {
             this.configs = files.filter(file => file.endsWith('.conf.js'));
-            this.selectedConfig = this.configs[0]
-            this.$emit('updated', this.selectedConfig);
+
+            this.setConfig(this.configs[0]);
           }
         })
       },
-      setConfig (config) {
-        this.selectedConfig = config;
-        this.$emit('updated', config);
+      setConfig (configFile) {
+        this.selectedConfig = configFile;
+        this.$store.dispatch('setConfig', configFile);
       }
     }
   }

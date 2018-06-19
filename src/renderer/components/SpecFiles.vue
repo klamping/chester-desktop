@@ -4,17 +4,22 @@
       {{ error }}
     </div>
 
-    <Tree :data="treeSpecs" show-checkbox v-if="specs"></Tree>
+    <Button type="ghost" v-if="!inInputMode" @click="showFiles">{{configs.specs}}</Button>
 
-    <Select v-model="selectedSpecs" multiple v-if="specs" @on-change="emitEvent">
-      <Option v-for="spec in specs" :key="spec" :value="spec" size="small" placeholder="">{{spec}}</Option>
-    </Select>
+    <template v-if="inInputMode">
+      <!-- <Tree :data="treeSpecs" show-checkbox v-if="specs"></Tree> -->
+
+      <Select v-model="selectedSpecs" multiple v-if="specs" @on-change="setSpecs">
+        <Option v-for="spec in specs" :key="spec" :value="spec" size="small" placeholder="">{{spec}}</Option>
+      </Select>
+    </template>
   </div>
 </template>
 
 <script>
   import ConfigParser from 'webdriverio/build/lib/utils/ConfigParser.js';
   import path from 'path';
+  import { mapState } from 'vuex';
 
   export default {
     name: 'SpecFiles',
@@ -22,37 +27,45 @@
 
     data () {
       return {
-        specs: null,
         error: null,
+        specs: [],
         selectedSpecs: [],
-        treeSpecs: []
+        treeSpecs: [],
+        inInputMode: false
       }
     },
 
-    props: {
-      config: String,
-      path: String
+    computed: {
+      ...mapState({
+        project: state => state.Project.project,
+        configs: state => state.Project.configs,
+        overrides: state => state.Project.overrides,
+      })
     },
 
-    created () {
-      this.findFiles();
-    },
     watch: {
-      'config': 'findFiles'
+      'configs': 'resetFiles'
     },
     methods: {
+      showFiles () {
+        this.inInputMode = true;
+        this.findFiles();
+      },
+      resetFiles () {
+        this.inInputMode = false;
+        this.specs = [];
+        this.selectedSpecs = [];
+      },
       findFiles () {
-        try {
-          const { config } = this.$electron.remote.require(`${this.config}`);
-
-          const pattern = config.specs.map(spec => path.join(this.path, spec));
+        if ('specs' in this.configs) {
+          const pattern = this.configs.specs.map(spec => path.join(this.project.path, spec));
           const specs = ConfigParser.getFilePaths(pattern);
 
-          this.specs = this.selectedSpecs = specs.map(spec => spec.replace(this.path, ''));
+          this.selectedSpecs = this.specs = specs.map(spec => spec.replace(this.project.path, ''));
+
+          this.setSpecs(this.selectedSpecs);
+
           this.createTree(this.specs);
-          this.$emit('updated', this.selectedSpecs);
-        } catch (e) {
-          this.error = e;
         }
       },
       growTree (tree, nodes) {
@@ -63,6 +76,7 @@
         if (!branch) {
           branch = {
             title: nodes[0],
+            expand: true,
             children: []
           }
           tree.push(branch);
@@ -83,17 +97,39 @@
           tree = this.growTree(tree, nodes.slice(1));
         })
 
-        tree[0].expand = true;
         tree[0].checked = true;
 
         this.treeSpecs = tree;
       },
-      emitEvent () {
-        this.$emit('updated', this.selectedSpecs);
+      setSpecs (specs) {
+        // todo make this work with treeview
+        // check to see if we've changed the specs from the original
+
+        const areSame = (this.selectedSpecs.length === this.specs.length) &&
+          this.selectedSpecs.every((spec) => {
+            return this.specs.includes(spec);
+          });
+
+        if (!areSame) {
+          this.$store.commit('setOverride', {
+            spec: specs
+          });
+        } else {
+          this.$store.commit('removeOverride', 'spec');
+        }
       }
     }
   }
 </script>
 
 <style>
+  .ivu-tree {
+    line-height: 2.25;
+  }
+  .ivu-tree ul li {
+    margin: 0;
+  }
+  .ivu-tree-title {
+    padding: 0;
+  }
 </style>

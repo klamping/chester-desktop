@@ -39,8 +39,15 @@
           path: this.path,
           name: this.name,
           command: this.command
-        });
-        this.clear();
+        })
+          .then((project) => {
+            this.$router.push({ name: 'project', params: { id: project._id } })
+            this.clear();
+          })
+          .catch(err => {
+            console.error(err);
+            // show error on form an allow for resubmit
+          });
       },
       addPath () {
         this.path = this.$electron.remote.dialog.showOpenDialog({

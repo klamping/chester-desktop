@@ -1,15 +1,13 @@
 <template>
-  <div class="layout">
-    <Layout :style="{minHeight: '100vh'}">
-      <Sider collapsible :collapsed-width="48" v-model="isCollapsed">
-        <ProjectList></ProjectList>
-        <AddProjectForm></AddProjectForm>
-      </Sider>
-      <Layout>
-        <router-view></router-view>
-      </Layout>
+  <Layout :style="{minHeight: '100vh'}">
+    <Sider collapsible :collapsed-width="48" v-model="isCollapsed">
+      <ProjectList></ProjectList>
+      <AddProjectForm></AddProjectForm>
+    </Sider>
+    <Layout>
+      <router-view></router-view>
     </Layout>
-  </div>
+  </Layout>
 </template>
 
 <script>

@@ -14,19 +14,25 @@
 
         <Form :label-width="150">
           <FormItem label="Project command">
-            <Input type="text" v-model="project.command" size="large"/>
+            <Input type="text" :value="project.command" @input="updateCommand" size="large"/>
           </FormItem>
           <FormItem label="Config Files">
-            <ConfigFiles v-bind:path="project.path" @updated="updateConfigFile"/>
+            <ConfigFiles/>
           </FormItem>
-          <FormItem label="Spec Files" v-if="configFile">
-            <SpecFiles v-bind:path="project.path" v-bind:config="configPath" @updated="updateSpecs"/>
+          <FormItem label="Spec Files">
+            <SpecFiles/>
+          </FormItem>
+          <FormItem label="Log Level">
+            <ConfigOption config="logLevel" :options="logLevelOptions"/>
+          </FormItem>
+          <FormItem label="Base Url">
+            <ConfigOption config="baseUrl"/>
           </FormItem>
           <FormItem>
             <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Test</Button>
-            <p>{{generatedCommand}}</p>
           </FormItem>
         </Form>
+        <p>{{generatedCommand}}</p>
 
       </Content>
       <Term class="terminal"></Term>
@@ -35,41 +41,52 @@
 </template>
 
 <script>
-  import db from '../datastore'
-  import ConfigFiles from './ConfigFiles'
-  import SpecFiles from './SpecFiles'
-  import Term from './Term'
-  import path from 'path'
+  import ConfigFiles from './ConfigFiles';
+  import SpecFiles from './SpecFiles';
+  import ConfigOption from './ConfigOption';
+  import Term from './Term';
   import iView from 'iview';
+  import { mapState } from 'vuex';
 
   export default {
     name: 'project',
-    components: { ConfigFiles, SpecFiles, Term },
+    components: { ConfigFiles, SpecFiles, ConfigOption, Term },
 
     data () {
       return {
         loading: false,
-        project: null,
         error: null,
         testRunning: false,
         configFile: null,
-        specs: []
+        specs: [],
+        logLevelOptions: ['silent', 'verbose', 'command', 'data', 'result', 'error']
       }
     },
 
     computed: {
+      ...mapState({
+        config: state => state.Project.config,
+        overrides: state => state.Project.overrides,
+        project: state => state.Project.project
+      }),
       // a computed getter
       generatedCommand: function () {
-        let command = `${this.project.command} ${this.configFile}`;
+        let command = `${this.project.command} ${this.config}`;
 
-        if (this.specs.length > 0) {
-          command = `${command} --spec=${this.specs.join(',')}`
+        if (this.overrides) {
+          const cliArgs = Object.keys(this.overrides).reduce((args, arg) => {
+            let argValue = this.overrides[arg];
+
+            if (Array.isArray(argValue)) {
+              argValue = argValue.join(',');
+            }
+
+            return `${args} --${arg}=${argValue}`;
+          }, '');
+          command = `${command} ${cliArgs}`
         }
 
         return command;
-      },
-      configPath: function () {
-        return path.join(this.project.path, this.configFile);
       }
     },
 
@@ -91,37 +108,44 @@
     methods: {
       fetchData () {
         iView.LoadingBar.start();
-        this.error = this.project = null
-        db.findOne({_id: this.$route.params.id}, (err, project) => {
-          if (err) {
-            this.error = err.toString()
-            iView.LoadingBar.error();
-          } else {
+        this.error = null
+
+        this.$store.dispatch('setProject', this.$route.params.id)
+          .then((project) => {
             iView.LoadingBar.finish();
-            this.project = project
-          }
-        });
+            if (!project) {
+              this.$router.push({ path: '/' });
+            }
+          })
+          .catch((err) => {
+            this.error = err;
+            iView.LoadingBar.error();
+          });
       },
       runTest () {
         this.testRunning = true;
         this.$electron.ipcRenderer.send('run-test', this.project.path, this.generatedCommand);
       },
       deleteProject () {
-        this.$store.commit('remove', this.project._id);
-        this.$router.push('landing-page')
+        this.$store
+          .dispatch('remove', this.project._id)
+          .then(() => {
+            this.$router.push({ path: '/' });
+          });
+      },
+      updateCommand (command) {
+        this.$store.dispatch('updateProject', { command });
       },
       updatePath () {
         const path = this.$electron.remote.dialog.showOpenDialog({
           properties: ['openDirectory']
-        })[0];
+        });
 
-        this.project.path = path;
-      },
-      updateConfigFile (file) {
-        this.configFile = file;
-      },
-      updateSpecs (specs) {
-        this.specs = specs;
+        console.log('Project.vue :137', path);
+
+        if (path) {
+          this.$store.dispatch('updateProject', { path: path[0] });
+        }
       }
     }
   }
@@ -133,8 +157,6 @@
     box-shadow: 0 2px 3px 2px rgba(0,0,0,.1);
     display: flex;
     align-items: baseline;
-  }
-  .project-path {
   }
   .delete {
     position: absolute;

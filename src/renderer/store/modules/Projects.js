@@ -10,37 +10,47 @@ const mutations = {
     state.all = [...state.all, project];
   },
   remove (state, projectId) {
-    db.remove({ _id: projectId }, {}, function (err, numRemoved) {
-      if (err) {
-        console.error(err);
-      }
-    });
     state.all = state.all.filter(p => p._id !== projectId)
   },
   set (state, projects) {
     state.all = projects
   }
-}
+};
 
 const actions = {
   addProject ({ commit }, project) {
     // todo validate data
-    db.insert(project, function (err, newDoc) {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      commit('add', newDoc)
+    return new Promise((resolve, reject) => {
+      db.insert(project, function (err, newDoc) {
+        if (err) {
+          reject(err);
+        }
+        commit('add', newDoc);
+        resolve(newDoc);
+      });
+    })
+  },
+  remove ({ commit }, projectId) {
+    return new Promise((resolve, reject) => {
+      db.remove({ _id: projectId }, {}, function (err, numRemoved) {
+        if (err) {
+          reject(err);
+        }
+        commit('remove', projectId)
+        resolve();
+      });
     });
   },
   getProjects ({ commit }) {
-    db.find({}, (err, projects) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+    return new Promise((resolve, reject) => {
+      db.find({}, (err, projects) => {
+        if (err) {
+          reject(err)
+        }
 
-      commit('set', projects)
+        commit('set', projects)
+        resolve(projects);
+      });
     });
   }
 }
