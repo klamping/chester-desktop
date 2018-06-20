@@ -1,5 +1,5 @@
 <template>
-  <Menu theme="dark" width="auto" v-bind:active-name="$route.params.id">
+  <Menu theme="dark" width="auto" v-bind:active-name="$route.params.id" class="projects">
     <MenuItem v-for="project in projects" :key="project._id" v-bind:name="project._id">
       <router-link :to="{ name: 'project', params: { id: project._id }}">
         {{project.name}}
@@ -25,15 +25,15 @@
 </script>
 
 <style>
-  .ivu-menu-vertical .ivu-menu-item {
+  .projects.ivu-menu-vertical .ivu-menu-item {
     position: relative;
     padding: 0;
     transition: width .2s ease .2s;
   }
-  .ivu-layout-sider-collapsed .ivu-menu-item {
+  .ivu-layout-sider-collapsed .projects .ivu-menu-item {
     transition: width .2s ease .2s;
   }
-  .ivu-menu-item a {
+  .projects .ivu-menu-item a {
     color: inherit;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -41,11 +41,11 @@
     white-space: nowrap;
     padding: 14px 20px;
   }
-  .ivu-layout-sider-collapsed .ivu-menu-item a {
+  .ivu-layout-sider-collapsed .projects .ivu-menu-item a {
     text-overflow: clip;
     overflow: hidden;
   }
-  .ivu-layout-sider-collapsed .ivu-menu-item a:first-letter {
+  .ivu-layout-sider-collapsed .projects .ivu-menu-item a:first-letter {
     position: absolute;
     color: #fff;
     margin-right: 30em;

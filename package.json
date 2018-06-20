@@ -46,10 +46,10 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns"
+      "icon": "build/icons/monster.png"
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icons/monster.png"
     },
     "linux": {
       "icon": "build/icons"
@@ -58,6 +58,7 @@
   "dependencies": {
     "ansi_up": "^3.0.0",
     "execa": "^0.10.0",
+    "fix-path": "^2.1.0",
     "iview": "^2.14.2",
     "nedb": "^1.8.0",
     "shelljs": "^0.8.2",

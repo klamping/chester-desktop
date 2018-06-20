@@ -1,10 +1,10 @@
 <template>
-  <Layout :style="{minHeight: '100vh'}">
-    No Project Selected.<br><br>
+  <Layout :style="{minHeight: '100vh', padding: '16px'}">
+    <Content>
+      <p>No Project Selected.</p>
 
-    Create a project!
-
-    <SystemInformation/>
+      <SystemInformation/>
+    </Content>
   </Layout>
 </template>
 

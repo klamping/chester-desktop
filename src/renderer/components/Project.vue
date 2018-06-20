@@ -1,8 +1,8 @@
 <template>
-  <Layout :style="{minHeight: '100vh'}">
-    <div v-if="error" class="error">
+  <Layout>
+    <Content v-if="error" class="error">
       {{ error }}
-    </div>
+    </Content>
 
     <template v-if="project">
       <Header class="project-header">
@@ -10,8 +10,7 @@
         <Button @click="updatePath()" type="text" class="project-path">{{project.path}}</Button>
         <Button v-on:click="deleteProject" type="error" class="delete">Delete Project</Button>
       </Header>
-      <Content :style="{padding: '16px'}">
-
+      <Content class="config-settings">
         <Form :label-width="100">
           <FormItem label="Config Files">
             <ConfigFiles/>
@@ -22,19 +21,22 @@
           <FormItem label="Capabilities">
             <Capabilities/>
           </FormItem>
-          <FormItem label="Log Level">
-            <ConfigOption config="logLevel" :options="logLevelOptions"/>
-          </FormItem>
-          <FormItem label="Base Url">
-            <ConfigOption config="baseUrl"/>
-          </FormItem>
+          <div class="small-configs">
+            <FormItem label="Base Url">
+              <ConfigOption config="baseUrl"/>
+            </FormItem>
+            <FormItem label="Log Level">
+              <ConfigOption config="logLevel" :options="logLevelOptions"/>
+            </FormItem>
+            <FormItem label="Env. Variables">
+              <EnvVars/>
+            </FormItem>
+          </div>
           <FormItem>
-            <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Test</Button>
+            <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Tests</Button>
           </FormItem>
         </Form>
-
       </Content>
-      <Term class="terminal"></Term>
     </template>
   </Layout>
 </template>
@@ -46,13 +48,13 @@
   import SpecFiles from './SpecFiles';
   import ConfigOption from './ConfigOption';
   import Capabilities from './Capabilities';
-  import Term from './Term';
+  import EnvVars from './EnvVars';
   import iView from 'iview';
   import { mapState, mapGetters } from 'vuex';
 
   export default {
     name: 'project',
-    components: { ConfigFiles, SpecFiles, ConfigOption, Term, Capabilities },
+    components: { ConfigFiles, SpecFiles, ConfigOption, Capabilities, EnvVars },
 
     data () {
       return {
@@ -67,6 +69,7 @@
 
     computed: {
       ...mapState({
+        envVars: state => state.Project.envVars,
         config: state => state.Project.config,
         overrides: state => state.Project.overrides,
         project: state => state.Project.project
@@ -126,7 +129,7 @@
       runTest () {
         // this.testRunning = true;
         const tempConfigPath = this.generateConfigFile();
-        const command = `./node_modules/.bin/wdio ${tempConfigPath}`;
+        const command = `${this.envVars} ./node_modules/.bin/wdio ${tempConfigPath}`;
         this.$electron.ipcRenderer.send('run-test', this.project.path, command);
       },
       deleteProject () {
@@ -161,9 +164,17 @@
     right: 1em;
     top: 1.2em;
   }
-  .terminal {
-    border-top: 1px solid #eee;
-    background: #eee;
+  .config-settings {
+    padding: 16px;
+    flex: 1 1 100%;
+    overflow: scroll;
+  }
+  .small-configs {
+    display: flex;
+    flex-wrap: wrap;
     width: 100%;
+  }
+  .small-configs > * {
+    flex: 1 0 33.3%;
   }
 </style>

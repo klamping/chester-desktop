@@ -1,19 +1,16 @@
 <template>
-  <div class="log-container">
-    <div id="info-log" v-html="log"></div>
-    <Button class="clear-logs" @click="clearLogs">Clear Logs</Button>
-  </div>
+  <div id="terminal"></div>
 </template>
 
 <script>
-  import { default as AnsiUp } from 'ansi_up';
+  import { Terminal } from 'xterm';
 
   export default {
-    name: 'term',
+    name: 'xterm',
     components: { },
     data () {
       return {
-        log: ''
+        log: '',
       }
     },
     created () {
@@ -21,11 +18,8 @@
       const au = new AnsiUp();
 
       this.$electron.ipcRenderer.on('test-log', (e, log) => {
-        let html = au.ansi_to_html(log).replace(/\n/, '<br/>');
-        if (!html.endsWith('<br/>')) {
-          html = `${html}<br/>`;
-        }
-        this.log += html;
+        const html = au.ansi_to_html(log);
+        this.log += `${html}<br />`;
         // cheap hack to scroll to bottom of container
         const container = document.getElementById('info-log');
         container.scrollTop = container.scrollHeight + 200;
@@ -39,27 +33,14 @@
       this.$electron.ipcRenderer.on('test-status', (e, status, type) => {
         this.$Message[type](status);
       });
-    },
-    methods: {
-      clearLogs () {
-        this.log = '';
-      }
     }
   }
 </script>
 
 <style>
-  .log-container {
-    position: relative;
-  }
   #info-log {
     width: 100%;
     max-height: 100%;
     overflow: scroll;
-  }
-  .clear-logs {
-    position: absolute;
-    top: 5px;
-    right: 5px;
   }
 </style>

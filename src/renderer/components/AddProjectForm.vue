@@ -15,9 +15,6 @@
         <FormItem label="Folder">
           <Button type="ghost" required v-model="path" @click="addPath()">{{path || 'Choose Folder'}}</Button>
         </FormItem>
-        <FormItem label="Command">
-          <Input type="text" required v-model="command" />
-        </FormItem>
       </Form>
     </Modal>
   </div>
@@ -29,8 +26,7 @@
       return {
         addingProject: false,
         name: '',
-        path: '',
-        command: './node_modules/.bin/wdio'
+        path: ''
       }
     },
     methods: {
@@ -57,14 +53,13 @@
       clear () {
         this.name = '';
         this.path = '';
-        this.command = './node_modules/.bin/wdio';
       }
     }
   }
 </script>
 
 <style>
-  .ivu-btn.add-project {
+  .add-project-container .ivu-btn.add-project {
     margin-top: 10px;
     border: 0;
     padding: 10px 18px;
@@ -72,7 +67,7 @@
     text-align: left;
     border-top: 1px #aaa dashed;
   }
-  .ivu-btn.add-project:hover {
+  .add-project-container .ivu-btn.add-project:hover {
     color: #fff;
     background: #363e4f;
     border-top-color: #2d8cf0;

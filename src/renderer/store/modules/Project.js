@@ -4,6 +4,7 @@ import path from 'path'
 
 const state = {
   project: null,
+  envVars: '',
   config: '',
   configs: {},
   overrides: {}
@@ -21,6 +22,9 @@ const mutations = {
   },
   setProject (state, project) {
     state.project = project;
+  },
+  setEnvVars (state, envVars) {
+    state.envVars = envVars;
   },
   setConfig (state, config) {
     state.config = config;

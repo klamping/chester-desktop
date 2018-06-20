@@ -1,11 +1,11 @@
 <template>
   <div class="cards">
     <Card class="card" v-for="cap in configs.capabilities" v-bind:title="cap.browserName">
-      <Button slot="extra" @click="disable(cap)" v-if="capabilities.includes(cap)" type="primary">
+      <Button slot="extra" @click="toggle(cap, false)" v-if="capabilities.includes(cap)" type="primary">
           <Icon type="checkmark-round"></Icon>
           Enabled
       </Button>
-      <Button slot="extra" @click="enable(cap)" v-if="!capabilities.includes(cap)" type="ghost">
+      <Button slot="extra" @click="toggle(cap, true)" v-if="!capabilities.includes(cap)" type="ghost">
           <Icon type="close-round"></Icon>
           Disabled
       </Button>
@@ -43,19 +43,20 @@
       'configs': 'resetOverride'
     },
     methods: {
-      enable (cap) {
-        this.capabilities.push(cap);
-      },
-      disable (cap) {
-        this.capabilities = this.capabilities.filter(c => c !== cap);
-      },
-      setOverride () {
+      toggle (cap, enabled) {
+        if (enabled) {
+          this.capabilities.push(cap);
+        } else {
+          this.capabilities = this.capabilities.filter(c => c !== cap);
+        }
         this.$store.commit('setOverride', {
-          capabilities: this.capabilities
+          capabilities: this.capabilities.slice(0)
         });
       },
       resetOverride () {
-        this.capabilities = this.configs.capabilities;
+        if (this.configs.capabilities) {
+          this.capabilities = this.configs.capabilities.slice(0);
+        }
         this.$store.commit('removeOverride', 'capabilities');
       }
     }
@@ -68,11 +69,11 @@
     flex-wrap: wrap;
   }
   .card {
-    flex: 1 0 calc(33.3% - 5px);
+    flex: 1 0 calc(25% - 5px);
     margin: 5px 5px 0 0;
-    max-width: calc(33.3% - 5px);
+    max-width: calc(25% - 5px);
   }
-  .ivu-card-extra {
+  .card .ivu-card-extra {
     top: 9px;
   }
 </style>

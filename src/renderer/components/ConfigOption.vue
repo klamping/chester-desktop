@@ -5,7 +5,7 @@
     </Select>
 
     <template v-if="!options">
-      <Button type="text" v-if="!inInputMode" @click="showInput">{{override || configs[config]}}</Button>
+      <Button type="ghost" v-if="!inInputMode" @click="showInput">{{override || configs[config]}}</Button>
 
       <template v-if="inInputMode">
         <Input type="text" v-model="override" @on-enter="closeInput" @on-change="setOverride">

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="spec-files">
     <div v-if="error" class="error">
       {{ error }}
     </div>
@@ -9,7 +9,7 @@
     <template v-if="inInputMode">
       <!-- <Tree :data="treeSpecs" show-checkbox v-if="specs"></Tree> -->
 
-      <Select v-model="selectedSpecs" multiple v-if="specs" @on-change="setSpecs">
+      <Select v-model="selectedSpecs" multiple v-if="specs" @on-change="setSpecs" placeholder="none selected">
         <Option v-for="spec in specs" :key="spec" :value="spec" size="small" placeholder="">{{spec}}</Option>
       </Select>
     </template>
@@ -58,8 +58,11 @@
       },
       findFiles () {
         if ('specs' in this.configs) {
-          const pattern = this.configs.specs.map(spec => path.join(this.project.path, spec));
-          const specs = ConfigParser.getFilePaths(pattern);
+          const include = this.configs.specs.map(spec => path.join(this.project.path, spec));
+          const exclude = this.configs.exclude.map(exclude => path.join(this.project.path, exclude));
+
+          const configParser = new ConfigParser();
+          const specs = configParser.getSpecs(include, exclude);
 
           // this.selectedSpecs = this.specs = specs.map(spec => spec.replace(this.project.path, ''));
           this.selectedSpecs = this.specs = specs.map(spec => spec.replace(this.project.path, '.'));
@@ -122,13 +125,13 @@
 </script>
 
 <style>
-  .ivu-tree {
+  .spec-files .ivu-tree {
     line-height: 2.25;
   }
-  .ivu-tree ul li {
+  .spec-files .ivu-tree ul li {
     margin: 0;
   }
-  .ivu-tree-title {
+  .spec-files .ivu-tree-title {
     padding: 0;
   }
 </style>

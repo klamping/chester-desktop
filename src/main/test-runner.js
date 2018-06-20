@@ -1,10 +1,13 @@
 const ipc = require('electron').ipcMain
 const { spawn } = require('child_process');
+const fixPath = require('fix-path');
+
+fixPath();
 
 ipc.on('run-test', function (event, folderPath, command) {
-  event.sender.send('test-status', 'Started')
+  event.sender.send('test-status', 'Test Started', 'info')
 
-  const run = spawn(command, [], {
+  const run = spawn(command, {
     cwd: folderPath,
     stdio: ['ignore', 'pipe', 'pipe'],
     shell: true
@@ -21,9 +24,9 @@ ipc.on('run-test', function (event, folderPath, command) {
   run.on('close', (code) => {
     if (code !== 0) {
       // save broken screenshot?
-      event.sender.send('test-status', 'Failed');
+      event.sender.send('test-status', 'Test Run Failure!', 'error');
     } else {
-      event.sender.send('test-status', 'Successful');
+      event.sender.send('test-status', 'Test Successful', 'success');
     }
   });
 })
