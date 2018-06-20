@@ -9,6 +9,12 @@ const state = {
   overrides: {}
 }
 
+const getters = {
+  fullConfigPath: state => {
+    return path.join(state.project.path, state.config)
+  }
+}
+
 const mutations = {
   updateProject (state, updates) {
     state.project = {...state.project, ...updates};
@@ -62,13 +68,12 @@ const actions = {
       });
     });
   },
-  setConfig ({ commit }, configFile) {
+  setConfig ({ commit, state }, configFile) {
     return new Promise((resolve, reject) => {
       try {
-        const configPath = path.join(state.project.path, configFile);
-        const { config } = remote.require(configPath);
-        commit('resetOverrides')
         commit('setConfig', configFile);
+        const { config } = remote.require(getters.fullConfigPath(state));
+        commit('resetOverrides')
         commit('setConfigs', config);
         resolve(config);
       } catch (e) {
@@ -81,6 +86,7 @@ const actions = {
 export default {
   namespace: true,
   state,
+  getters,
   mutations,
   actions
 }

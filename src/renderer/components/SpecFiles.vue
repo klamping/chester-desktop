@@ -61,7 +61,8 @@
           const pattern = this.configs.specs.map(spec => path.join(this.project.path, spec));
           const specs = ConfigParser.getFilePaths(pattern);
 
-          this.selectedSpecs = this.specs = specs.map(spec => spec.replace(this.project.path, ''));
+          // this.selectedSpecs = this.specs = specs.map(spec => spec.replace(this.project.path, ''));
+          this.selectedSpecs = this.specs = specs.map(spec => spec.replace(this.project.path, '.'));
 
           this.setSpecs(this.selectedSpecs);
 
@@ -111,11 +112,9 @@
           });
 
         if (!areSame) {
-          this.$store.commit('setOverride', {
-            spec: specs
-          });
+          this.$store.commit('setOverride', { specs });
         } else {
-          this.$store.commit('removeOverride', 'spec');
+          this.$store.commit('removeOverride', 'specs');
         }
       }
     }

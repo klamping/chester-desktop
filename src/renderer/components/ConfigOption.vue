@@ -9,7 +9,10 @@
 
       <template v-if="inInputMode">
         <Input type="text" v-model="override" @on-enter="closeInput" @on-change="setOverride">
-          <Button slot="append" icon="close" @click="cancelInput"></Button>
+          <div slot="append">
+            <Button icon="checkmark" @click="closeInput"></Button>
+            <Button icon="close" @click="cancelInput"></Button>
+          </div>
         </Input>
       </template>
     </template>

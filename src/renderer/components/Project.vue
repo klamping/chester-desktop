@@ -12,15 +12,15 @@
       </Header>
       <Content :style="{padding: '16px'}">
 
-        <Form :label-width="150">
-          <FormItem label="Project command">
-            <Input type="text" :value="project.command" @input="updateCommand" size="large"/>
-          </FormItem>
+        <Form :label-width="100">
           <FormItem label="Config Files">
             <ConfigFiles/>
           </FormItem>
           <FormItem label="Spec Files">
             <SpecFiles/>
+          </FormItem>
+          <FormItem label="Capabilities">
+            <Capabilities/>
           </FormItem>
           <FormItem label="Log Level">
             <ConfigOption config="logLevel" :options="logLevelOptions"/>
@@ -32,7 +32,6 @@
             <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Test</Button>
           </FormItem>
         </Form>
-        <p>{{generatedCommand}}</p>
 
       </Content>
       <Term class="terminal"></Term>
@@ -41,16 +40,19 @@
 </template>
 
 <script>
+  import fs from 'fs';
+  import path from 'path';
   import ConfigFiles from './ConfigFiles';
   import SpecFiles from './SpecFiles';
   import ConfigOption from './ConfigOption';
+  import Capabilities from './Capabilities';
   import Term from './Term';
   import iView from 'iview';
-  import { mapState } from 'vuex';
+  import { mapState, mapGetters } from 'vuex';
 
   export default {
     name: 'project',
-    components: { ConfigFiles, SpecFiles, ConfigOption, Term },
+    components: { ConfigFiles, SpecFiles, ConfigOption, Term, Capabilities },
 
     data () {
       return {
@@ -69,25 +71,9 @@
         overrides: state => state.Project.overrides,
         project: state => state.Project.project
       }),
-      // a computed getter
-      generatedCommand: function () {
-        let command = `${this.project.command} ${this.config}`;
-
-        if (this.overrides) {
-          const cliArgs = Object.keys(this.overrides).reduce((args, arg) => {
-            let argValue = this.overrides[arg];
-
-            if (Array.isArray(argValue)) {
-              argValue = argValue.join(',');
-            }
-
-            return `${args} --${arg}=${argValue}`;
-          }, '');
-          command = `${command} ${cliArgs}`
-        }
-
-        return command;
-      }
+      ...mapGetters([
+        'fullConfigPath'
+      ])
     },
 
     created () {
@@ -122,9 +108,26 @@
             iView.LoadingBar.error();
           });
       },
+      generateConfigFile () {
+        if (this.overrides) {
+          // write to temp file
+          const contents = `exports.config = { ...require('${this.fullConfigPath}').config, ...${JSON.stringify(this.overrides)} }`;
+
+          // return path
+          const tempDir = this.$electron.remote.app.getPath('temp');
+          const filePath = path.join(tempDir, 'wdio.conf.js');
+          fs.writeFileSync(filePath, contents, 'utf8');
+
+          return filePath;
+        } else {
+          return this.config;
+        }
+      },
       runTest () {
-        this.testRunning = true;
-        this.$electron.ipcRenderer.send('run-test', this.project.path, this.generatedCommand);
+        // this.testRunning = true;
+        const tempConfigPath = this.generateConfigFile();
+        const command = `./node_modules/.bin/wdio ${tempConfigPath}`;
+        this.$electron.ipcRenderer.send('run-test', this.project.path, command);
       },
       deleteProject () {
         this.$store
@@ -133,15 +136,10 @@
             this.$router.push({ path: '/' });
           });
       },
-      updateCommand (command) {
-        this.$store.dispatch('updateProject', { command });
-      },
       updatePath () {
         const path = this.$electron.remote.dialog.showOpenDialog({
           properties: ['openDirectory']
         });
-
-        console.log('Project.vue :137', path);
 
         if (path) {
           this.$store.dispatch('updateProject', { path: path[0] });
