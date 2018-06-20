@@ -1,6 +1,10 @@
 # chester-desktop
 
 > An electron-vue project
+> 
+## Download
+
+A very-alpha version is availabe for [OSX download](./Chester-0.0.0.dmg). 
 
 #### Build Setup
 
