@@ -22,8 +22,8 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "chester-desktop",
-    "appId": "org.simulatedgreg.electron-vue",
+    "productName": "Chester",
+    "appId": "org.klamping.chester-desktop",
     "directories": {
       "output": "build"
     },
@@ -46,7 +46,7 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/monster.png"
+      "icon": "build/icons/monster.icns"
     },
     "win": {
       "icon": "build/icons/monster.png"
