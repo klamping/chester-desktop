@@ -31,13 +31,13 @@
         container.scrollTop = container.scrollHeight + 200;
       });
 
-      this.$Message.config({
+      this.$Notice.config({
         top: 80,
         duration: 2
       });
 
       this.$electron.ipcRenderer.on('test-status', (e, status, type) => {
-        this.$Message[type](status);
+        this.$Notice[type](status);
       });
     },
     methods: {
