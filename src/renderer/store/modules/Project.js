@@ -12,7 +12,7 @@ const state = {
 
 const getters = {
   fullConfigPath: state => {
-    return path.join(state.project.path, state.config)
+    return state.config ? path.join(state.project.path, state.config) : '';
   }
 }
 
@@ -76,8 +76,11 @@ const actions = {
     return new Promise((resolve, reject) => {
       try {
         commit('setConfig', configFile);
-        const { config } = remote.require(getters.fullConfigPath(state));
         commit('resetOverrides')
+        let config = {};
+        if (configFile) {
+          config = remote.require(getters.fullConfigPath(state)).config;
+        }
         commit('setConfigs', config);
         resolve(config);
       } catch (e) {

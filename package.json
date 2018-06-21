@@ -5,6 +5,13 @@
   "description": "An electron-vue project",
   "license": null,
   "main": "./dist/electron/main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/klamping/chester-desktop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/klamping/chester-desktop/issues"
+  },
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",

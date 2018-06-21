@@ -12,16 +12,17 @@
       </Header>
       <Content class="config-settings">
         <Form :label-width="100">
-          <FormItem label="Config Files">
-            <ConfigFiles/>
-          </FormItem>
-          <FormItem label="Spec Files">
-            <SpecFiles/>
-          </FormItem>
-          <FormItem label="Capabilities">
-            <Capabilities/>
-          </FormItem>
-          <div class="small-configs">
+          <ConfigFiles/>
+          <Card v-if="!config">
+            No WebdriverIO configuration files were found in "{{project.path}}" matching the `*.conf.js` pattern.
+          </Card>
+          <template v-if="config">
+            <FormItem label="Spec Files">
+              <SpecFiles/>
+            </FormItem>
+            <FormItem label="Capabilities">
+              <Capabilities/>
+            </FormItem>
             <FormItem label="Base Url">
               <ConfigOption config="baseUrl"/>
             </FormItem>
@@ -31,10 +32,10 @@
             <FormItem label="Env. Variables">
               <EnvVars/>
             </FormItem>
-          </div>
-          <FormItem>
-            <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Tests</Button>
-          </FormItem>
+            <FormItem>
+              <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Tests</Button>
+            </FormItem>
+          </template>
         </Form>
       </Content>
     </template>
@@ -98,6 +99,7 @@
       fetchData () {
         iView.LoadingBar.start();
         this.error = null
+        this.$store.dispatch('setConfig', '');
 
         this.$store.dispatch('setProject', this.$route.params.id)
           .then((project) => {
