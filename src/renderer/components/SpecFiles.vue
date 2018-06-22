@@ -20,6 +20,7 @@
   import ConfigParser from 'webdriverio/build/lib/utils/ConfigParser.js';
   import path from 'path';
   import { mapState } from 'vuex';
+  import { createTree } from './TreeBuilder.js'
 
   export default {
     name: 'SpecFiles',
@@ -69,41 +70,8 @@
 
           this.setSpecs(this.selectedSpecs);
 
-          this.createTree(this.specs);
+          this.treeSpecs = createTree(this.specs);
         }
-      },
-      growTree (tree, nodes) {
-        // check if branch exists
-        let branch = tree.find((item) => item.title === nodes[0]);
-
-        // if not, create it
-        if (!branch) {
-          branch = {
-            title: nodes[0],
-            expand: true,
-            children: []
-          }
-          tree.push(branch);
-        }
-
-        if (nodes.length > 1) {
-          // go down the stem, creating more if necessary
-          this.growTree(branch.children, nodes.slice(1));
-        }
-
-        return tree;
-      },
-      createTree (files, parent) {
-        let tree = [];
-
-        files.forEach(file => {
-          const nodes = file.split(path.sep);
-          tree = this.growTree(tree, nodes.slice(1));
-        })
-
-        tree[0].checked = true;
-
-        this.treeSpecs = tree;
       },
       setSpecs (specs) {
         // todo make this work with treeview
