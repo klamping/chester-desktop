@@ -1,10 +1,10 @@
 const assert = require('assert');
-const { growTree, createTree } = require('./TreeBuilder.js')
+const { createTree } = require('./TreeBuilder.js')
 
 const tests = {
   'createTree should be a function': function () {
     const actual = typeof createTree;
-    assert(actual === "function", `Expected ${actual} to be "function"`);
+    assert(actual === 'function', `Expected ${actual} to be "function"`);
   },
   'createTree should return an array': function () {
     const actual = createTree(['']);
@@ -122,7 +122,7 @@ const tests = {
       './test/specs/file1.js',
       './test/specs/a/file2.js',
       './test/specs/b/file3.js',
-      ]);
+    ]);
     const expected = [{
       title: 'test',
       expand: true,
