@@ -1,5 +1,5 @@
 <template>
-  <Layout :style="{minHeight: '100vh', padding: '16px'}">
+  <Layout :style="{minHeight: '100vh', padding: '16px', marginLeft: '5em'}">
     <Content>
       <p>No Project Selected.</p>
 

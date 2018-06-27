@@ -1,11 +1,11 @@
 <template>
-  <Menu theme="dark" width="auto" v-bind:active-name="$route.params.id" class="projects">
-    <MenuItem v-for="project in projects" :key="project._id" v-bind:name="project._id">
+  <template>
+    <DropdownItem v-for="project in projects" :key="project._id" v-bind:name="project._id">
       <router-link :to="{ name: 'project', params: { id: project._id }}">
         {{project.name}}
       </router-link>
-    </MenuItem>
-  </Menu>
+    </DropdownItem>
+  </template>
 </template>
 
 <script>

@@ -160,6 +160,7 @@
     box-shadow: 0 2px 3px 2px rgba(0,0,0,.1);
     display: flex;
     align-items: baseline;
+    padding-left: 5em;
   }
   .delete {
     position: absolute;

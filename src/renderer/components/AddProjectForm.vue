@@ -1,5 +1,5 @@
 <template>
-  <div class="add-project-container">
+  <DropdownItem class="add-project-container">
     <Button class="add-project" @click="addingProject = true" long size="large" type="dashed" icon="plus"><span>Add New Project</span></Button>
     <Modal
         v-model="addingProject"
@@ -17,7 +17,7 @@
         </FormItem>
       </Form>
     </Modal>
-  </div>
+  </DropdownItem>
 </template>
 
 <script>
@@ -59,18 +59,20 @@
 </script>
 
 <style>
+  .add-project-container.ivu-dropdown-item {
+    padding: 0;
+    margin: 5px 0 0;
+  }
   .add-project-container .ivu-btn.add-project {
-    margin-top: 10px;
     border: 0;
+    border-top: #aaa dashed 1px;
+    border-radius: 0;
     padding: 10px 18px;
-    color: #ddd;
+    color: #999;
     text-align: left;
-    border-top: 1px #aaa dashed;
   }
   .add-project-container .ivu-btn.add-project:hover {
-    color: #fff;
-    background: #363e4f;
-    border-top-color: #2d8cf0;
+    background: #eee;
   }
 
   .add-project span {
