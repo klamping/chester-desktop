@@ -6,9 +6,9 @@ A desktop helper app for running WebdriverIO tests
 
 ## Download
 
-A very-alpha version is availabe for [OSX download](./releases/download/v0.0.0/Chester-0.0.0.dmg). 
+A very-alpha version is availabe for [OSX download](https://github.com/klamping/chester-desktop/releases/download/v0.0.0/Chester-0.0.0.dmg). 
 
-Please report bugs and request features on [the issues page](./issues).
+Please report bugs and request features on [the issues page](https://github.com/klamping/chester-desktop/issues).
 
 ### Run the dev version locally
 
