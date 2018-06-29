@@ -34,6 +34,9 @@ ipc.on('run-test', function (event, folderPath, command) {
   });
 })
 
+ipc.on('send-sigint', function () {
+  currentRun.kill('SIGINT');
+})
 // ipc.on('debug-command', function (command) {
 
 // })

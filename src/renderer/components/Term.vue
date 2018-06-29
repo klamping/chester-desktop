@@ -27,7 +27,7 @@
         }
         this.log += html;
         // cheap hack to scroll to bottom of container
-        const container = document.getElementById('info-log');
+        const container = document.querySelector('.log-container');
         container.scrollTop = container.scrollHeight + 200;
       });
 
@@ -53,10 +53,8 @@
 <style>
   .log-container {
     position: relative;
-  }
-  #info-log {
     width: 100%;
-    max-height: 100%;
+    height: 100%;
     overflow: scroll;
   }
   .clear-logs {

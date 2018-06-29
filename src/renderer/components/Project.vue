@@ -39,6 +39,7 @@
             </FormItem>
             <FormItem>
               <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Tests</Button>
+              <Button v-on:click="stopTest" type="success" v-bind:disabled="!testRunning">Stop Tests</Button>
             </FormItem>
           </template>
         </Form>
@@ -89,8 +90,8 @@
       // fetch the data when the view is created and the data is
       // already being observed
       this.fetchData()
-      this.$electron.ipcRenderer.on('test-status', (e, status) => {
-        if (status === 'Successful' || status === 'Failed') {
+      this.$electron.ipcRenderer.on('test-status', (e, msg, status) => {
+        if (status === 'error' || status === 'success') {
           this.testRunning = false;
         }
       });
@@ -134,10 +135,14 @@
         }
       },
       runTest () {
-        // this.testRunning = true;
+        this.testRunning = true;
         const tempConfigPath = this.generateConfigFile();
         const command = `${this.envVars} ./node_modules/.bin/wdio ${tempConfigPath}`;
         this.$electron.ipcRenderer.send('run-test', this.project.path, command);
+      },
+      stopTest () {
+        this.testRunning = false;
+        this.$electron.ipcRenderer.send('send-sigint');
       },
       deleteProject () {
         this.$store
