@@ -37,7 +37,9 @@
       });
 
       this.$electron.ipcRenderer.on('test-status', (e, status, type) => {
-        this.$Notice[type](status);
+        this.$Notice[type]({
+          title: status
+        });
       });
     },
     methods: {
