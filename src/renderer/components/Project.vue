@@ -8,7 +8,12 @@
       <Header class="project-header">
         <h1>{{project.name}}</h1>
         <Button @click="updatePath()" type="text" class="project-path">{{project.path}}</Button>
-        <Button v-on:click="deleteProject" type="error" class="delete">Delete Project</Button>
+
+        <Tooltip placement="left" content="Delete this project?" class="delete">
+          <Button v-on:click="deleteProject" type="text">
+            <Icon type="trash-a"></Icon>
+          </Button>
+        </Tooltip>
       </Header>
       <Content class="config-settings">
         <Form :label-width="100">
@@ -164,8 +169,20 @@
   }
   .delete {
     position: absolute;
-    right: 1em;
-    top: 1.2em;
+    right: 13px;
+    top: 13px;
+    padding: 0;
+    line-height: 1;
+  }
+  .delete button {
+    color: #fe5f55;
+    padding: 0 10px;
+    font-size: 2em;
+  }
+  .delete button:hover,
+  .delete button:focus {
+    color: #fff;
+    background: #ff0000;
   }
   .config-settings {
     padding: 16px;

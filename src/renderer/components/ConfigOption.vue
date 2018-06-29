@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Select filterable v-if="options" v-model="override" @on-change="setOverride">
+    <Select filterable v-if="options" v-model="override" @on-change="setOverride" placeholder="">
       <Option v-for="option in options" :value="option" :key="option">{{ option }}</Option>
     </Select>
 
@@ -8,7 +8,7 @@
       <Button type="ghost" v-if="!inInputMode" @click="showInput">{{override || configs[config]}}</Button>
 
       <template v-if="inInputMode">
-        <Input type="text" v-model="override" @on-enter="closeInput" @on-change="setOverride">
+        <Input type="text" v-model="override" @on-enter="closeInput" @on-change="setOverride" placeholder="">
           <div slot="append">
             <Button icon="checkmark" @click="closeInput"></Button>
             <Button icon="close" @click="cancelInput"></Button>

@@ -9,7 +9,7 @@
     <template v-if="inInputMode">
       <!-- <Tree :data="treeSpecs" show-checkbox v-if="specs"></Tree> -->
 
-      <Select v-model="selectedSpecs" multiple v-if="specs" @on-change="setSpecs" placeholder="none selected">
+      <Select v-model="selectedSpecs" multiple v-if="specs" @on-change="setSpecs" placeholder="No Files Selected" not-found-text="No files found">
         <Option v-for="spec in specs" :key="spec" :value="spec" size="small" placeholder="">{{spec}}</Option>
       </Select>
     </template>
