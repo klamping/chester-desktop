@@ -39,6 +39,7 @@
     position: absolute;
     left: 10px;
     top: 15px;
+    z-index: 3;
   }
   .project-menu .ivu-select-dropdown {
     padding-bottom: 0;

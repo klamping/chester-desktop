@@ -15,8 +15,18 @@
           </Button>
         </Tooltip>
       </Header>
-      <Content class="config-settings">
-        <Form :label-width="100">
+      <Content class="content">
+        <div class="aux-content">
+          <Tabs type="card">
+              <TabPane label="File Browser">
+                <FileView></FileView>
+              </TabPane>
+              <!-- <TabPane label="Test Cases">
+                <p>These are the test cases</p>
+              </TabPane> -->
+          </Tabs>
+        </div>
+        <Form :label-width="100" class="config-settings">
           <ConfigFiles/>
           <Card v-if="!config">
             No WebdriverIO configuration files were found in "{{project.path}}" matching the `*.conf.js` pattern.
@@ -48,9 +58,85 @@
   </Layout>
 </template>
 
+<style>
+  .ivu-layout {
+    min-height: 100%;
+    max-height: 100%;
+  }
+  .project-header.ivu-layout-header {
+    background: #fff;
+    box-shadow: 0 2px 3px 2px rgba(0,0,0,.1);
+    display: flex;
+    align-items: baseline;
+    padding-left: 5em;
+    z-index: 2;
+    position: relative;
+  }
+  .delete {
+    position: absolute;
+    right: 13px;
+    top: 13px;
+    padding: 0;
+    line-height: 1;
+  }
+  .delete button {
+    color: #fe5f55;
+    padding: 0 10px;
+    font-size: 2em;
+  }
+  .delete button:hover,
+  .delete button:focus {
+    color: #fff;
+    background: #ff0000;
+  }
+  .content {
+    display: flex;
+    overflow: hidden;
+  }
+  .aux-content {
+    width: 25em;
+    flex: 1 0 25em;
+    background: #fff;
+    display: block;
+    overflow: auto;
+    max-height: 100%;
+    padding-top: 10px;
+    box-sizing: border-box;
+    border-right: 1px solid #ddd;
+  }
+  .aux-content .ivu-tabs {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .aux-content .ivu-tabs-bar {
+    margin-bottom: 0;
+  }
+  .aux-content .ivu-tabs-nav {
+    padding-left: 5px;
+  }
+  .aux-content .ivu-tabs-content {
+    flex: 1;
+  }
+  .config-settings {
+    padding: 16px;
+    flex: 1 1 calc(100% - 25em);
+    overflow: scroll;
+  }
+  .small-configs {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .small-configs > * {
+    flex: 1 0 33.3%;
+  }
+</style>
+
 <script>
   import fs from 'fs';
   import path from 'path';
+  import FileView from './FileView';
   import ConfigFiles from './ConfigFiles';
   import SpecFiles from './SpecFiles';
   import ConfigOption from './ConfigOption';
@@ -61,7 +147,7 @@
 
   export default {
     name: 'project',
-    components: { ConfigFiles, SpecFiles, ConfigOption, Capabilities, EnvVars },
+    components: { FileView, ConfigFiles, SpecFiles, ConfigOption, Capabilities, EnvVars },
 
     data () {
       return {
@@ -163,43 +249,3 @@
     }
   }
 </script>
-
-<style>
-  .project-header.ivu-layout-header {
-    background: #fff;
-    box-shadow: 0 2px 3px 2px rgba(0,0,0,.1);
-    display: flex;
-    align-items: baseline;
-    padding-left: 5em;
-  }
-  .delete {
-    position: absolute;
-    right: 13px;
-    top: 13px;
-    padding: 0;
-    line-height: 1;
-  }
-  .delete button {
-    color: #fe5f55;
-    padding: 0 10px;
-    font-size: 2em;
-  }
-  .delete button:hover,
-  .delete button:focus {
-    color: #fff;
-    background: #ff0000;
-  }
-  .config-settings {
-    padding: 16px;
-    flex: 1 1 100%;
-    overflow: scroll;
-  }
-  .small-configs {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-  }
-  .small-configs > * {
-    flex: 1 0 33.3%;
-  }
-</style>

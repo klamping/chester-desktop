@@ -1,18 +1,18 @@
 <template>
-  <Layout class="main-container">
+  <div class="main-container">
     <ProjectMenu></ProjectMenu>
-    <Content class="main-content">
+    <div class="main-content">
       <router-view></router-view>
-    </Content>
-    <Footer>
+    </div>
+    <div class="footer">
       <div
         class="terminal"
         v-bind:class="{ expanded: terminalExpanded }">
         <Button v-bind:icon="terminalExpanded ? 'chevron-down' : 'chevron-up'" @click="terminalExpanded = !terminalExpanded" type="text" class="terminal-toggle"></Button>
         <Term></Term>
       </div>
-    </Footer>
-  </Layout>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -32,11 +32,16 @@
 
 <style>
   .main-container {
-    height: calc(100vh - 18em);
-    margin-bottom: 18em;
+    max-height: 100vh;
+    overflow: hidden;
   }
-  .main-container .ivu-layout-footer {
+  .main-content {
+    height: calc(100vh - 18em);
+    overflow: auto;
+  }
+  .footer {
     padding: 0;
+    height: 18em;
   }
 
   .terminal {
