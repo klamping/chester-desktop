@@ -1,6 +1,6 @@
 const path = require('path')
 
-function growTree (tree, nodes) {
+function growTree (tree, nodes, parentPath) {
   // check if branch exists
   let branch = tree.find((item) => item.title === nodes[0]);
 
@@ -8,15 +8,17 @@ function growTree (tree, nodes) {
   if (!branch) {
     branch = {
       title: nodes[0],
-      expand: true,
+      expand: false,
+      path: parentPath,
       children: []
     }
     tree.push(branch);
   }
 
   if (nodes.length > 1) {
+    const newParentPath = parentPath + path.sep + branch.title;
     // go down the stem, creating more if necessary
-    growTree(branch.children, nodes.slice(1));
+    growTree(branch.children, nodes.slice(1), newParentPath);
   }
 
   return tree;
@@ -30,12 +32,13 @@ function createTree (files, parent) {
     if (nodes.length > 1) {
       nodes = nodes.slice(1)
     }
-    tree = growTree(tree, nodes);
+    tree = growTree(tree, nodes, '');
   })
 
   // check all at the root level
   tree = tree.map(file => {
     file.checked = true;
+    file.expand = true;
     return file;
   });
 
