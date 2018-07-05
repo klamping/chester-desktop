@@ -1,18 +1,12 @@
 # Commented sections below can be used to run tests on the CI server
 # https://simulatedgreg.gitbooks.io/electron-vue/content/en/testing.html#on-the-subject-of-ci-testing
+osx_image: xcode8.3
 sudo: required
 dist: trusty
 language: c
 matrix:
   include:
   - os: osx
-    osx_image: xcode9.3
-    language: node_js
-    node_js: "8"
-    env:
-      - ELECTRON_CACHE=$HOME/.cache/electron
-      - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
-
   - os: linux
     env: CC=clang CXX=clang++ npm_config_clang=1
     compiler: clang
@@ -35,6 +29,7 @@ before_install:
 install:
 #- export DISPLAY=':99.0'
 #- Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+- nvm install 8
 - curl -o- -L https://yarnpkg.com/install.sh | bash
 - source ~/.bashrc
 - npm install -g xvfb-maybe
