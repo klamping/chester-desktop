@@ -1,14 +1,15 @@
 <template>
   <div>
-    <div v-if="error" class="error">
-      {{ error }}
-    </div>
-
     <FormItem label="Config Files" v-if="configs && configs.length > 0">
       <ButtonGroup>
         <Button v-for="config in configs" v-bind:type="(selectedConfig === config) ? 'primary' : 'default'" :key="config" @click="setConfig(config)">{{config}}</Button>
       </ButtonGroup>
     </FormItem>
+
+    <div v-if="error" class="error">
+      <h2>Error while loading <i>{{selectedConfig}}</i> file:</h2>
+      <pre>{{ error }}</pre>
+    </div>
   </div>
 </template>
 
@@ -42,6 +43,7 @@
     },
     methods: {
       findConfigs () {
+        this.error = ''
         fs.readdir(this.project.path, (err, files) => {
           if (err) {
             this.error = err.toString()
@@ -54,9 +56,14 @@
           }
         })
       },
-      setConfig (configFile) {
+      async setConfig (configFile) {
+        this.error = ''
         this.selectedConfig = configFile;
-        this.$store.dispatch('setConfig', configFile);
+        try {
+          await this.$store.dispatch('setConfig', configFile);
+        } catch (e) {
+          this.error = e.message;
+        }
       }
     }
   }

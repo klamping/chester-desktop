@@ -9,6 +9,11 @@
         <h1>{{project.name}}</h1>
         <Button @click="updatePath()" type="text" class="project-path">{{project.path}}</Button>
 
+        <div class="run-buttons" v-if="configsLoaded">
+          <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Tests</Button>
+          <Button v-on:click="stopTest" type="success" v-bind:disabled="!testRunning">Stop Tests</Button>
+        </div>
+
         <Tooltip placement="left" content="Delete this project?" class="delete">
           <Button v-on:click="deleteProject" type="text">
             <Icon type="trash-a"></Icon>
@@ -31,7 +36,8 @@
           <Card v-if="!config">
             No WebdriverIO configuration files were found in "{{project.path}}" matching the `*.conf.js` pattern.
           </Card>
-          <template v-if="config">
+
+          <template v-if="configsLoaded">
             <FormItem label="Spec Files">
               <SpecFiles/>
             </FormItem>
@@ -46,10 +52,6 @@
             </FormItem>
             <FormItem label="Env. Variables">
               <EnvVars/>
-            </FormItem>
-            <FormItem>
-              <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Tests</Button>
-              <Button v-on:click="stopTest" type="success" v-bind:disabled="!testRunning">Stop Tests</Button>
             </FormItem>
           </template>
         </Form>
@@ -164,12 +166,16 @@
       ...mapState({
         envVars: state => state.Project.envVars,
         config: state => state.Project.config,
+        configs: state => state.Project.configs,
         overrides: state => state.Project.overrides,
         project: state => state.Project.project
       }),
       ...mapGetters([
         'fullConfigPath'
-      ])
+      ]),
+      configsLoaded: function () {
+        return this.config.length > 0 && Object.keys(this.configs).length > 0;
+      }
     },
 
     created () {

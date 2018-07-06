@@ -2,12 +2,16 @@ import db from '../../datastore'
 import { remote } from 'electron'
 import path from 'path'
 
-const state = {
+const initialState = {
   project: null,
   envVars: '',
   config: '',
   configs: {},
   overrides: {}
+}
+
+const state = {
+  ...initialState
 }
 
 const getters = {
@@ -28,6 +32,8 @@ const mutations = {
   },
   setConfig (state, config) {
     state.config = config;
+    state.configs = {}
+    state.overrides = {};
   },
   setConfigs (state, settings) {
     state.configs = settings;
@@ -42,8 +48,11 @@ const mutations = {
       state.overrides = updatedOverrides;
     }
   },
+  resetProject (state) {
+    state = { ...initialState };
+  },
   resetOverrides (state) {
-    state.overrides = null;
+    state.overrides = {};
   },
 }
 
@@ -60,31 +69,32 @@ const actions = {
     });
   },
   setProject ({ commit }, projectId) {
+    commit('resetProject')
     return new Promise((resolve, reject) => {
       db.findOne({ _id: projectId }, (err, project) => {
         if (err) {
           reject(err);
         }
 
-        commit('resetOverrides')
         commit('setProject', project)
         resolve(project);
       });
     });
   },
   setConfig ({ commit, state }, configFile) {
+    commit('setConfig', configFile);
+
     return new Promise((resolve, reject) => {
-      try {
-        commit('setConfig', configFile);
-        commit('resetOverrides')
-        let config = {};
-        if (configFile) {
-          config = remote.require(getters.fullConfigPath(state)).config;
+      if (configFile) {
+        try {
+          const fullPath = getters.fullConfigPath(state);
+
+          const { config } = remote.require(fullPath);
+          commit('setConfigs', config);
+          resolve(config);
+        } catch (e) {
+          reject(e);
         }
-        commit('setConfigs', config);
-        resolve(config);
-      } catch (e) {
-        reject(e);
       }
     });
   },

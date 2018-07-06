@@ -1,7 +1,9 @@
 <template>
-  <li class="item">
+  <li
+    class="item"
+    :class="{ folder: isFolder }"
+  >
     <div
-      :class="{bold: isFolder}"
       @click="toggle"
       @dblclick="openFile"
       class="item-name">
@@ -27,7 +29,12 @@
 <style>
   .item {
     list-style: none;
-    margin: 0;
+  }
+  .sub-items .item {
+    margin: 0 0 0 12px;
+  }
+  .sub-items .item.folder {
+    margin-left: 2px;
   }
   .item-name {
     cursor: pointer;

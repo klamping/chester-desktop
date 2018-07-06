@@ -12,7 +12,7 @@
         <FormItem label="Project Name">
           <Input type="text" required v-model="name" />
         </FormItem>
-        <FormItem label="Folder">
+        <FormItem label="Project Folder">
           <Button type="ghost" required v-model="path" @click="addPath()">{{path || 'Choose Folder'}}</Button>
         </FormItem>
       </Form>

@@ -12,16 +12,19 @@
         <Term></Term>
       </div>
     </div>
+
+    <Feedback class="feedback"></Feedback>
   </div>
 </template>
 
 <script>
   import ProjectMenu from './ProjectMenu'
+  import Feedback from './Feedback'
   import Term from './Term';
 
   export default {
     name: 'landing-page',
-    components: { ProjectMenu, Term },
+    components: { ProjectMenu, Term, Feedback },
     data () {
       return {
         terminalExpanded: false
@@ -42,6 +45,13 @@
   .footer {
     padding: 0;
     height: 18em;
+  }
+  .feedback {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 10;
+    color: #aaa;
   }
 
   .terminal {
