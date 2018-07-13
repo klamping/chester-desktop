@@ -10,14 +10,14 @@
         <Button @click="updatePath()" type="text" class="project-path">{{project.path}}</Button>
 
         <div class="run-buttons" v-if="configsLoaded">
-          <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Tests</Button>
+          <Tooltip placement="bottom" content="(Ctrl+r)">
+            <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Tests</Button>
+          </Tooltip>
           <Button v-on:click="stopTest" type="success" v-bind:disabled="!testRunning">Stop Tests</Button>
         </div>
 
         <Tooltip placement="left" content="Delete this project?" class="delete">
-          <Button v-on:click="deleteProject" type="text">
-            <Icon type="trash-a"></Icon>
-          </Button>
+          <Button v-on:click="deleteProject" type="text" icon="trash-a" />
         </Tooltip>
       </Header>
       <Content class="content">
@@ -91,6 +91,9 @@
     color: #fff;
     background: #ff0000;
   }
+  .delete .ivu-btn .ivu-icon+span {
+    margin: 0;
+  }
   .content {
     display: flex;
     overflow: hidden;
@@ -146,6 +149,7 @@
   import EnvVars from './EnvVars';
   import iView from 'iview';
   import { mapState, mapGetters } from 'vuex';
+  import Mousetrap from 'mousetrap';
 
   export default {
     name: 'project',
@@ -185,6 +189,13 @@
       this.$electron.ipcRenderer.on('test-status', (e, msg, status) => {
         if (status === 'error' || status === 'success') {
           this.testRunning = false;
+        }
+      });
+
+      // listen for ctrl/cmd + r
+      Mousetrap.bind('ctrl+r', (e) => {
+        if (this.configsLoaded && !this.testRunning) {
+          this.runTest();
         }
       });
     },

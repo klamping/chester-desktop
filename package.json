@@ -1,6 +1,6 @@
 {
   "name": "chester-desktop",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Kevin Lamping <klamping@gmail.com>",
   "description": "An electron-vue project",
   "license": null,
@@ -70,6 +70,7 @@
     "execa": "^0.10.0",
     "fix-path": "^2.1.0",
     "iview": "^2.14.2",
+    "mousetrap": "^1.6.2",
     "nedb": "^1.8.0",
     "recursive-readdir": "^2.2.2",
     "shelljs": "^0.8.2",
