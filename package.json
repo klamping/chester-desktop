@@ -27,7 +27,8 @@
     "test": "npm run unit && npm run e2e",
     "unit": "karma start test/unit/karma.conf.js",
     "postinstall": "npm run lint:fix",
-    "check": "node src/renderer/components/TreeBuilder.test.js"
+    "check": "node src/renderer/components/TreeBuilder.test.js",
+    "release": "node .electron-vue/build.js && electron-builder --publish=always"
   },
   "build": {
     "productName": "Chester",
