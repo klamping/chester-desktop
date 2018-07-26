@@ -104,6 +104,7 @@
     height: 18em;
     width: 100vw;
     bottom: 0;
+    padding: 5px;
     border-top: 1px solid #aaa;
     transition: height 0.25s ease-in-out;
     background: #223;

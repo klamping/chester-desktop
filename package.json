@@ -1,8 +1,8 @@
 {
   "name": "chester-desktop",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "author": "Kevin Lamping <klamping@gmail.com>",
-  "description": "An electron-vue project",
+  "description": "A desktop helper app for running WebdriverIO tests",
   "license": null,
   "main": "./dist/electron/main.js",
   "repository": {

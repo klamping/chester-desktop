@@ -1,8 +1,12 @@
 <template>
   <div>
-    <Select filterable v-if="options" v-model="override" @on-change="setOverride" placeholder="">
+    <Select filterable v-if="options && type === 'select'" v-model="override" @on-change="setOverride" placeholder="">
       <Option v-for="option in options" :value="option" :key="option">{{ option }}</Option>
     </Select>
+
+    <RadioGroup v-if="options && type === 'radio'" v-model="override" type="button" @on-change="setOverride">
+      <Radio v-for="option in options" :label="option" :value="option" :key="option"></Radio>
+    </RadioGroup>
 
     <template v-if="!options">
       <Button type="ghost" v-if="!inInputMode" @click="showInput">{{override || configs[config]}}</Button>
@@ -43,6 +47,7 @@
 
     props: {
       config: String,
+      type: String,
       options: Array
     },
 

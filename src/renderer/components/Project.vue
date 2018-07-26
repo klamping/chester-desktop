@@ -48,10 +48,14 @@
               <ConfigOption config="baseUrl"/>
             </FormItem>
             <FormItem label="Log Level">
-              <ConfigOption config="logLevel" :options="logLevelOptions"/>
+              <ConfigOption config="logLevel" :options="logLevelOptions" type="radio" />
             </FormItem>
             <FormItem label="Env. Variables">
               <EnvVars/>
+            </FormItem>
+            <FormItem label="Bail">
+              <ConfigOption config="bail" />
+              <p>Stop the test runner after specific amount of tests have failed (default: 0 - don't bail)</p>
             </FormItem>
           </template>
         </Form>
