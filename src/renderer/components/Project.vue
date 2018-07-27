@@ -1,73 +1,81 @@
 <template>
-  <Layout>
-    <Content v-if="error" class="error">
+  <div class="project">
+    <div v-if="error" class="error">
       {{ error }}
-    </Content>
+    </div>
 
     <template v-if="project">
-      <Header class="project-header">
-        <h1>{{project.name}}</h1>
-        <Button @click="updatePath()" type="text" class="project-path">{{project.path}}</Button>
+      <Layout class="project-container">
+        <Header class="project-header">
+          <h1>{{project.name}}</h1>
+          <Button @click="updatePath()" type="text" class="project-path">{{project.path}}</Button>
 
-        <div class="run-buttons" v-if="configsLoaded">
-          <Tooltip placement="bottom" content="(Ctrl+r)">
-            <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Tests</Button>
+          <div class="run-buttons" v-if="configsLoaded">
+            <Tooltip placement="bottom" content="(Ctrl+r)">
+              <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Tests</Button>
+            </Tooltip>
+            <Button v-on:click="stopTest" type="success" v-bind:disabled="!testRunning">Stop Tests</Button>
+          </div>
+
+          <Tooltip placement="left" content="Delete this project?" class="delete">
+            <Button v-on:click="deleteProject" type="text" icon="trash-a" />
           </Tooltip>
-          <Button v-on:click="stopTest" type="success" v-bind:disabled="!testRunning">Stop Tests</Button>
-        </div>
+        </Header>
+        <Content class="project-content">
+          <div class="aux-content">
+            <Tabs type="card">
+                <TabPane label="File Browser">
+                  <FileView></FileView>
+                </TabPane>
+                <!-- <TabPane label="Test Cases">
+                  <p>These are the test cases</p>
+                </TabPane> -->
+            </Tabs>
+          </div>
+          <Form :label-width="100" class="config-settings">
+            <ConfigFiles/>
+            <Card v-if="!config">
+              No WebdriverIO configuration files were found in "{{project.path}}" matching the `*.conf.js` pattern.
+            </Card>
 
-        <Tooltip placement="left" content="Delete this project?" class="delete">
-          <Button v-on:click="deleteProject" type="text" icon="trash-a" />
-        </Tooltip>
-      </Header>
-      <Content class="content">
-        <div class="aux-content">
-          <Tabs type="card">
-              <TabPane label="File Browser">
-                <FileView></FileView>
-              </TabPane>
-              <!-- <TabPane label="Test Cases">
-                <p>These are the test cases</p>
-              </TabPane> -->
-          </Tabs>
-        </div>
-        <Form :label-width="100" class="config-settings">
-          <ConfigFiles/>
-          <Card v-if="!config">
-            No WebdriverIO configuration files were found in "{{project.path}}" matching the `*.conf.js` pattern.
-          </Card>
-
-          <template v-if="configsLoaded">
-            <FormItem label="Spec Files">
-              <SpecFiles/>
-            </FormItem>
-            <FormItem label="Capabilities">
-              <Capabilities/>
-            </FormItem>
-            <FormItem label="Base Url">
-              <ConfigOption config="baseUrl"/>
-            </FormItem>
-            <FormItem label="Log Level">
-              <ConfigOption config="logLevel" :options="logLevelOptions" type="radio" />
-            </FormItem>
-            <FormItem label="Env. Variables">
-              <EnvVars/>
-            </FormItem>
-            <FormItem label="Bail">
-              <ConfigOption config="bail" />
-              <p>Stop the test runner after specific amount of tests have failed (default: 0 - don't bail)</p>
-            </FormItem>
-          </template>
-        </Form>
-      </Content>
+            <template v-if="configsLoaded">
+              <FormItem label="Spec Files">
+                <SpecFiles/>
+              </FormItem>
+              <FormItem label="Capabilities">
+                <Capabilities/>
+              </FormItem>
+              <FormItem label="Base Url">
+                <ConfigOption config="baseUrl"/>
+              </FormItem>
+              <FormItem label="Log Level">
+                <ConfigOption config="logLevel" :options="logLevelOptions" type="radio" />
+              </FormItem>
+              <FormItem label="Env. Variables">
+                <EnvVars/>
+              </FormItem>
+              <FormItem label="Bail">
+                <ConfigOption config="bail" />
+                <p>Stop the test runner after specific amount of tests have failed (default: 0 - don't bail)</p>
+              </FormItem>
+            </template>
+          </Form>
+        </Content>
+      </Layout>
+      <Term></Term>
     </template>
-  </Layout>
+  </div>
 </template>
 
 <style>
-  .ivu-layout {
-    min-height: 100%;
-    max-height: 100%;
+  .project {
+    display: flex;
+    height: 100vh;
+    position: relative;
+  }
+  .project-container {
+    display: flex;
+    height: calc(100% - 20em);
   }
   .project-header.ivu-layout-header {
     background: #fff;
@@ -98,7 +106,7 @@
   .delete .ivu-btn .ivu-icon+span {
     margin: 0;
   }
-  .content {
+  .project-content {
     display: flex;
     overflow: hidden;
   }
@@ -154,10 +162,11 @@
   import iView from 'iview';
   import { mapState, mapGetters } from 'vuex';
   import Mousetrap from 'mousetrap';
+  import Term from './Term';
 
   export default {
     name: 'project',
-    components: { FileView, ConfigFiles, SpecFiles, ConfigOption, Capabilities, EnvVars },
+    components: { FileView, Term, ConfigFiles, SpecFiles, ConfigOption, Capabilities, EnvVars },
 
     data () {
       return {
@@ -219,6 +228,8 @@
             iView.LoadingBar.finish();
             if (!project) {
               this.$router.push({ path: '/' });
+            } else {
+              this.$electron.ipcRenderer.send('start-term', project.path);
             }
           })
           .catch((err) => {
@@ -245,10 +256,10 @@
         this.testRunning = true;
         const tempConfigPath = this.generateConfigFile();
         const command = `${this.envVars} ./node_modules/.bin/wdio ${tempConfigPath}`;
-        this.$electron.ipcRenderer.send('run-test', this.project.path, command);
+        this.$electron.ipcRenderer.send('run-test', command);
       },
       stopTest () {
-        this.testRunning = false;
+        // this.testRunning = false;
         this.$electron.ipcRenderer.send('send-sigint');
       },
       deleteProject () {

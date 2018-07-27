@@ -38,9 +38,9 @@
 
 <style>
   .no-project-container {
-    min-height: 100%;
-    padding: 16px;
     display: flex;
+    flex: 1;
+    padding: 16px;
     justify-content: center;
     align-items: center;
     background: #efefef;

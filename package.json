@@ -71,6 +71,7 @@
     "iview": "^2.14.2",
     "mousetrap": "^1.6.2",
     "nedb": "^1.8.0",
+    "node-pty": "^0.7.6",
     "recursive-readdir": "^2.2.2",
     "vue": "^2.3.3",
     "vue-electron": "^1.0.6",

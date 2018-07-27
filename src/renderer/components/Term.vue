@@ -27,7 +27,12 @@
         terminalExpanded: false
       }
     },
+    watch: {
+      // call again the method if the route changes
+      '$route': 'reload'
+    },
     mounted () {
+      console.log('Term.vue :31');
       Terminal.applyAddon(fit);
       Terminal.applyAddon(fullscreen);
       this.term = new Terminal({
@@ -57,17 +62,13 @@
       this.term.open(document.getElementById('terminal'));
       this.term.fit();
 
-      this.term.writeln('Welcome! Test output will appear here')
-
-      // this.$electron.ipcRenderer.on('run-test', function (event, folderPath, command) {
-      //   console.log('Term.vue :32');
-      //   this.term.writeln(command)
-      //   this.term.scrollToBottom();
-      // });
+      this.term.on('data', (data) => {
+        this.$electron.ipcRenderer.send('xterm', data);
+      });
 
       this.$electron.ipcRenderer.on('test-log', (e, log) => {
-        log = log.replace(/\r?\n/g, '\r');
-        this.term.writeln(log)
+        // log = log.replace(/\r?\n/g, '\r');
+        this.term.write(log)
         this.term.scrollToBottom();
       });
 
@@ -92,6 +93,9 @@
         setTimeout(() => {
           this.term.fit();
         }, 300)
+      },
+      reload () {
+        this.term.clear();
       }
     }
   }
@@ -101,10 +105,11 @@
   .terminal-container {
     position: absolute;
     flex: 1;
-    height: 18em;
+    box-sizing: border-box;
+    height: 20em;
     width: 100vw;
-    bottom: 0;
     padding: 5px;
+    bottom: 0;
     border-top: 1px solid #aaa;
     transition: height 0.25s ease-in-out;
     background: #223;
