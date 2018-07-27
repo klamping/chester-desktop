@@ -228,8 +228,6 @@
             iView.LoadingBar.finish();
             if (!project) {
               this.$router.push({ path: '/' });
-            } else {
-              this.$electron.ipcRenderer.send('start-term', project.path);
             }
           })
           .catch((err) => {
@@ -255,8 +253,8 @@
       runTest () {
         this.testRunning = true;
         const tempConfigPath = this.generateConfigFile();
-        const command = `${this.envVars} ./node_modules/.bin/wdio ${tempConfigPath}`;
-        this.$electron.ipcRenderer.send('run-test', command);
+        const command = `./node_modules/.bin/wdio`;
+        this.$electron.ipcRenderer.send('run-test', this.project.path, this.envVars, command, [tempConfigPath]);
       },
       stopTest () {
         // this.testRunning = false;

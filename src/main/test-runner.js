@@ -1,59 +1,69 @@
 const ipc = require('electron').ipcMain
 // const { spawn } = require('child_process');
 const pty = require('node-pty');
-const os = require('os');
+// const os = require('os');
+// const spawn = require('cross-spawn');
 const fixPath = require('fix-path');
 
 fixPath();
 
-let ptyProcess;
+let childProcess;
 
-const shell = process.env[os.platform() === 'win32' ? 'COMSPEC' : 'SHELL'];
+// const shell = childProcess.env[os.platform() === 'win32' ? 'COMSPEC' : 'SHELL'];
+//
+// ipc.on('start-term', function (event, folderPath) {
+//   if (childProcess) {
+//     console.log('test-runner.js :15, killing old proces');
+//     childProcess.kill();
+//   }
 
-ipc.on('start-term', function (event, folderPath) {
-  if (ptyProcess) {
-    console.log('test-runner.js :15, killing old proces');
-    ptyProcess.kill();
-  }
+//   childProcess = pty.spawn(shell, [], {
+//     name: 'xterm-color',
+//     cwd: folderPath,
+//     env: childProcess.env
+//   });
 
-  ptyProcess = pty.spawn(shell, [], {
-    name: 'xterm-color',
-    cwd: folderPath,
-    env: process.env
-  });
-
-  ptyProcess.on('data', (data) => {
-    console.log('test-runner.js :26', data);
-    event.sender.send('test-log', data.toString('utf8'));
-  });
-});
+//   childProcess.on('data', (data) => {
+//     console.log('test-runner.js :26', data);
+//     event.sender.send('test-log', data.toString('utf8'));
+//   });
+// });
 
 ipc.on('xterm', function (event, data) {
-  if (ptyProcess) {
-    ptyProcess.write(data);
+  if (childProcess) {
+    childProcess.write(data);
+    // event.sender.send('debug', data);
   }
 });
 
-ipc.on('run-test', function (event, command) {
+ipc.on('run-test', function (event, cwd, env, command, args) {
   event.sender.send('test-status', 'Test Started', 'info')
 
-  ptyProcess.write(`${command}\r`);
-
-  ptyProcess.on('exit', (code) => {
-    console.log('test-runner.js :49', 'exit');
+  childProcess = pty.spawn(command, args, {
+    cwd,
+    env
   })
 
-  // ptyProcess.on('close', (code) => {
-  //   console.log('test-runner.js :51', 'process closed');
-  //   if (code !== 0) {
-  //     // save broken screenshot?
-  //     event.sender.send('test-status', 'Test Run Failure!', 'error');
-  //   } else {
-  //     event.sender.send('test-status', 'Test Successful', 'success');
-  //   }
+  childProcess.on('data', (data) => {
+    event.sender.send('test-log', data.toString());
+  });
+
+  // childProcess.stderr.on('data', (data) => {
+  //   console.log('test-runner.js :53');
+  //   event.sender.send('test-log', data.toString());
   // });
+
+  childProcess.on('exit', (code, signal) => {
+    childProcess = null;
+    if (code !== 0) {
+      // save broken screenshot?
+      event.sender.send('test-status', 'Test Run Failure!', 'error');
+    } else {
+      event.sender.send('test-status', 'Test Successful', 'success');
+    }
+  });
 })
 
 ipc.on('send-sigint', function () {
-  ptyProcess.kill('SIGINT');
+  childProcess.kill('SIGINT');
 })

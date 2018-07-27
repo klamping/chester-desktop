@@ -15,8 +15,10 @@
 
 <script>
   import { Terminal } from 'xterm';
+  // import  { EOL } from 'os';
   import * as fit from 'xterm/lib/addons/fit/fit';
   import * as fullscreen from 'xterm/lib/addons/fullscreen/fullscreen';
+  import * as winptyCompat from 'xterm/lib/addons/winptyCompat/winptyCompat';
   import 'xterm/dist/xterm.css'
 
   export default {
@@ -32,9 +34,9 @@
       '$route': 'reload'
     },
     mounted () {
-      console.log('Term.vue :31');
       Terminal.applyAddon(fit);
       Terminal.applyAddon(fullscreen);
+      Terminal.applyAddon(winptyCompat);
       this.term = new Terminal({
         theme: {
           foreground: '#d0d0d0',
@@ -61,15 +63,14 @@
       });
       this.term.open(document.getElementById('terminal'));
       this.term.fit();
+      this.term.writeln('Terminal loaded. Test output will appear here')
 
       this.term.on('data', (data) => {
         this.$electron.ipcRenderer.send('xterm', data);
       });
 
       this.$electron.ipcRenderer.on('test-log', (e, log) => {
-        // log = log.replace(/\r?\n/g, '\r');
         this.term.write(log)
-        this.term.scrollToBottom();
       });
 
       this.$Notice.config({
@@ -78,6 +79,7 @@
       });
 
       this.$electron.ipcRenderer.on('test-status', (e, status, type) => {
+        this.term.writeln(`---- ${status} ----`)
         this.$Notice[type]({
           title: status
         });
@@ -95,7 +97,8 @@
         }, 300)
       },
       reload () {
-        this.term.clear();
+        // this.term.write('Test output will appear here')
+        // this.term.clear();
       }
     }
   }
