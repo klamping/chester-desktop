@@ -126,6 +126,7 @@
   .feedback-container .ivu-btn {
     font-size: 26px;
     padding: 0;
+    color: #aaa;
   }
   .error {
     color: #fff;

@@ -111,7 +111,7 @@
     box-sizing: border-box;
     height: 20em;
     width: 100vw;
-    padding: 5px;
+    padding: 0 5px;
     bottom: 0;
     border-top: 1px solid #aaa;
     transition: height 0.25s ease-in-out;
@@ -126,7 +126,7 @@
     height: 100%;
     width: 100%;
   }
-  .terminal-toggle {
+  .terminal-toggle.ivu-btn {
     position: absolute;
     left: 50%;
     bottom: calc(100% + 1px);
@@ -137,13 +137,13 @@
     color: #ccc;
     transition: bottom 0.25s ease-in-out;
   }
-  .expanded .terminal-toggle {
+  .expanded .terminal-toggle.ivu-btn {
     bottom: 97%;
     border: 0;
     border-radius: 3px;
     background: rgba(100, 100, 100, .5);
   }
-  .clear-logs {
+  .clear-logs.ivu-btn {
     position: absolute;
     top: 1em;
     right: 5px;
@@ -153,8 +153,8 @@
     color: #fff;
     transition: all 0.25s ease-in-out;
   }
-  .clear-logs:hover,
-  .clear-logs:focus {
+  .clear-logs.ivu-btn:hover,
+  .clear-logs.ivu-btn:focus {
     opacity: 1;
     background: #000;
   }

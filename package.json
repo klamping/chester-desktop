@@ -1,6 +1,6 @@
 {
   "name": "chester-desktop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Kevin Lamping <klamping@gmail.com>",
   "description": "A desktop helper app for running WebdriverIO tests",
   "license": null,
