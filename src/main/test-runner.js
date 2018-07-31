@@ -36,8 +36,18 @@ ipc.on('xterm', function (event, data) {
   }
 });
 
-ipc.on('run-test', function (event, cwd, env, command, args) {
+ipc.on('run-test', function (event, cwd, envVars, command, args) {
   event.sender.send('test-status', 'Test Started', 'info')
+
+  // create an empty object to hold env variables
+  const env = { ...process.env };
+
+  const splitVars = envVars.split(' ');
+
+  splitVars.forEach(envVar => {
+    const separated = envVar.split('=');
+    env[separated[0]] = separated[1];
+  })
 
   childProcess = pty.spawn(command, args, {
     cwd,
