@@ -237,8 +237,10 @@
       },
       generateConfigFile () {
         if (this.overrides) {
+          // fix for windows pathing issue
+          const escapedPath = this.fullConfigPath.replace(/\\/g, '\\\\');
           // write to temp file
-          const contents = `exports.config = { ...require('${this.fullConfigPath}').config, ...${JSON.stringify(this.overrides)} }`;
+          const contents = `exports.config = { ...require('${escapedPath}').config, ...${JSON.stringify(this.overrides)} }`;
 
           // return path
           const tempDir = this.$electron.remote.app.getPath('temp');
@@ -253,7 +255,7 @@
       runTest () {
         this.testRunning = true;
         const tempConfigPath = this.generateConfigFile();
-        const command = `./node_modules/.bin/wdio`;
+        const command = `./node_modules/webdriverio/build/lib/cli.js`;
         this.$electron.ipcRenderer.send('run-test', this.project.path, this.envVars, command, [tempConfigPath]);
       },
       stopTest () {

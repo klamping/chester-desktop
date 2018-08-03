@@ -49,7 +49,8 @@ ipc.on('run-test', function (event, cwd, envVars, command, args) {
     env[separated[0]] = separated[1];
   })
 
-  childProcess = pty.spawn(command, args, {
+  const nodeCommand = process.platform === 'win32' ? 'node.exe' : 'node';
+  childProcess = pty.spawn(nodeCommand, [command, ...args], {
     cwd,
     env
   })
