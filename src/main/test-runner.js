@@ -4,6 +4,7 @@ const pty = require('node-pty');
 // const os = require('os');
 // const spawn = require('cross-spawn');
 const fixPath = require('fix-path');
+const which = require('which')
 
 fixPath();
 
@@ -42,15 +43,18 @@ ipc.on('run-test', function (event, cwd, envVars, command, args) {
   // create an empty object to hold env variables
   const env = { ...process.env };
 
-  const splitVars = envVars.split(' ');
+  if (envVars.length > 0) {
+    const splitVars = envVars.split(' ');
 
-  splitVars.forEach(envVar => {
-    const separated = envVar.split('=');
-    env[separated[0]] = separated[1];
-  })
+    splitVars.forEach(envVar => {
+      const separated = envVar.split('=');
+      env[separated[0]] = separated[1];
+    })
+  }
 
-  const nodeCommand = process.platform === 'win32' ? 'node.exe' : 'node';
-  childProcess = pty.spawn(nodeCommand, [command, ...args], {
+  const resolved = which.sync('node', {nothrow: true});
+
+  childProcess = pty.spawn(resolved, [command, ...args], {
     cwd,
     env
   })

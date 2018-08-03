@@ -255,7 +255,7 @@
       runTest () {
         this.testRunning = true;
         const tempConfigPath = this.generateConfigFile();
-        const command = `./node_modules/webdriverio/build/lib/cli.js`;
+        const command = path.join('node_modules', 'webdriverio', 'build', 'lib', 'cli.js');
         this.$electron.ipcRenderer.send('run-test', this.project.path, this.envVars, command, [tempConfigPath]);
       },
       stopTest () {
