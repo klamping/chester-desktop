@@ -72,6 +72,7 @@
     "nedb": "^1.8.0",
     "node-pty": "^0.7.6",
     "recursive-readdir": "^2.2.2",
+    "run-node": "^1.0.0",
     "vue": "^2.3.3",
     "vue-electron": "^1.0.6",
     "vue-router": "^2.5.3",
