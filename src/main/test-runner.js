@@ -1,7 +1,7 @@
 const ipc = require('electron').ipcMain
 // const { spawn } = require('child_process');
 const pty = require('node-pty');
-// const os = require('os');
+const os = require('os');
 // const spawn = require('cross-spawn');
 const fixPath = require('fix-path');
 
@@ -49,7 +49,7 @@ ipc.on('run-test', function (event, cwd, envVars, command, args) {
     env[separated[0]] = separated[1];
   })
 
-  const nodeCommand = process.platform === 'win32' ? 'node.exe' : 'node';
+  const nodeCommand = (os.platform() === 'win32') ? 'node.exe' : 'node';
   childProcess = pty.spawn(nodeCommand, [command, ...args], {
     cwd,
     env
