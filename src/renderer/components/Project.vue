@@ -34,9 +34,6 @@
           </div>
           <Form :label-width="100" class="config-settings">
             <ConfigFiles/>
-            <Card v-if="!config">
-              No WebdriverIO configuration files were found in "{{project.path}}" matching the `*.conf.js` pattern.
-            </Card>
 
             <template v-if="configsLoaded">
               <FormItem label="Spec Files">

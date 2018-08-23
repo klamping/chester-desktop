@@ -7,7 +7,8 @@ const initialState = {
   envVars: '',
   config: '',
   configs: {},
-  overrides: {}
+  overrides: {},
+  userConfigs: []
 }
 
 const state = {
@@ -84,8 +85,8 @@ const actions = {
   setConfig ({ commit, state }, configFile) {
     commit('setConfig', configFile);
 
-    return new Promise((resolve, reject) => {
-      if (configFile) {
+    if (configFile) {
+      return new Promise((resolve, reject) => {
         try {
           const fullPath = getters.fullConfigPath(state);
 
@@ -95,8 +96,8 @@ const actions = {
         } catch (e) {
           reject(e);
         }
-      }
-    });
+      });
+    }
   },
 }
 
