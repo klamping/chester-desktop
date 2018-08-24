@@ -1,6 +1,6 @@
 {
   "name": "chester-desktop",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "author": "Kevin Lamping <klamping@gmail.com>",
   "description": "A desktop helper app for running WebdriverIO tests",
   "license": null,
@@ -65,7 +65,7 @@
     }
   },
   "dependencies": {
-    "electron-updater": "^2.23.3",
+    "electron-updater": "^3.1.1",
     "fix-path": "^2.1.0",
     "iview": "^2.14.2",
     "mousetrap": "^1.6.2",
@@ -101,7 +101,7 @@
     "del": "^3.0.0",
     "devtron": "^1.4.0",
     "electron": "^2.0.5",
-    "electron-builder": "^19.19.1",
+    "electron-builder": "^20.28.2",
     "electron-debug": "^1.4.0",
     "electron-devtools-installer": "^2.2.0",
     "electron-log": "^2.2.16",
