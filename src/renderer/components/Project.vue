@@ -225,6 +225,12 @@
             iView.LoadingBar.finish();
             if (!project) {
               this.$router.push({ path: '/' });
+            } else {
+              // check to ensure the database for the project is right
+              if (!project.customConfigs) {
+                // if no custom configs, set up an array
+                this.$store.dispatch('updateProject', { customConfigs: [] });
+              }
             }
           })
           .catch((err) => {

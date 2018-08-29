@@ -1,8 +1,8 @@
 <template>
   <div>
-    <FormItem label="Config Files" v-if="configs && configs.length > 0">
+    <FormItem label="Config Files" v-if="allConfigs && allConfigs.length > 0">
       <ButtonGroup>
-        <Button v-for="config in configs" v-bind:type="(selectedConfig === config) ? 'primary' : 'default'" :key="config" @click="setConfig(config)">{{config}}</Button>
+        <Button v-for="config in allConfigs" v-bind:type="(selectedConfig === config) ? 'primary' : 'default'" :key="config" @click="setConfig(config)">{{config}}</Button>
       </ButtonGroup>
       <Button @click="addConfig()">+</Button>
     </FormItem>
@@ -12,7 +12,7 @@
       <pre>{{ error }}</pre>
     </div>
 
-    <Card v-if="!configs || configs.length === 0">
+    <Card v-if="!allConfigs || allConfigs.length === 0">
       <p>No WebdriverIO configuration files were found in "{{project.path}}" matching the `*.conf.js` pattern.</p>
       <Button @click="addConfig()">Add a custom config location</Button>
     </Card>
@@ -38,15 +38,26 @@
 
     computed: {
       ...mapState({
-        project: state => state.Project.project
-      })
+        project: state => state.Project.project,
+      }),
+      allConfigs: function () {
+        if (this.configs) {
+          if (this.project.customConfigs) {
+            return [...this.configs, ...this.project.customConfigs];
+          } else {
+            return this.configs;
+          }
+        } else {
+          return []
+        }
+      }
     },
 
     created () {
       this.findConfigs();
     },
     watch: {
-      'project': 'findConfigs'
+      'project._id': 'findConfigs'
     },
     methods: {
       findConfigs () {
@@ -57,8 +68,8 @@
           } else {
             this.configs = files.filter(file => file.endsWith('.conf.js'));
 
-            if (this.configs.length > 0) {
-              this.setConfig(this.configs[0]);
+            if (this.allConfigs.length > 0) {
+              this.setConfig(this.allConfigs[0]);
             }
           }
         })
@@ -74,9 +85,11 @@
         if (configPath) {
           const trimmedPaths = configPath.map(filepath => filepath.replace(this.project.path + path.sep, ''))
 
-          this.configs = [...trimmedPaths, ...this.configs];
+          const allCustomConfigs = [...this.project.customConfigs, ...trimmedPaths];
 
-          this.setConfig(this.configs[0]);
+          this.$store.dispatch('updateProject', { customConfigs: allCustomConfigs });
+
+          this.setConfig(trimmedPaths[0]);
         }
       },
       async setConfig (configFile) {

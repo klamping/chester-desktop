@@ -34,6 +34,7 @@
         this.$store.dispatch('addProject', {
           path: this.path,
           name: this.name,
+          customConfigs: [],
           command: this.command
         })
           .then((project) => {
@@ -49,6 +50,8 @@
         this.path = this.$electron.remote.dialog.showOpenDialog({
           properties: ['openDirectory']
         })[0];
+
+        // TODO add notice if no config files are found
       },
       clear () {
         this.name = '';
