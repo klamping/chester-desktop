@@ -16,6 +16,7 @@
           </li>
         </ul>
       </div>
+      <AddProjectForm></AddProjectForm>
     </div>
   </div>
 </template>
