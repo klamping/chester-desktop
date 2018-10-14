@@ -1,9 +1,9 @@
 <template>
   <DropdownItem class="add-project-container">
-    <Button class="add-project" @click="addingProject = true" long size="large" type="dashed" icon="plus"><span>Add New Project</span></Button>
+    <Button class="add-project" @click="addingProject = true" long size="large" type="dashed" icon="plus"><span>Add a Project</span></Button>
     <Modal
         v-model="addingProject"
-        title="Add a New Project"
+        title="Add a Project"
         @on-ok="addProject"
         ok-text="Add"
         cancel-text="Cancel"
@@ -14,6 +14,7 @@
         </FormItem>
         <FormItem label="Project Folder">
           <Button type="ghost" required v-model="path" @click="addPath()">{{path || 'Choose Folder'}}</Button>
+          <p>This should be the folder containing your <code>package.json</code> file</p>
         </FormItem>
       </Form>
     </Modal>
