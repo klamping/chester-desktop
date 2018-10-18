@@ -48,9 +48,13 @@
           });
       },
       addPath () {
-        this.path = this.$electron.remote.dialog.showOpenDialog({
+        const updatedPath = this.$electron.remote.dialog.showOpenDialog({
           properties: ['openDirectory']
-        })[0];
+        });
+
+        if (updatedPath) {
+          this.path = updatedPath[0]
+        }
 
         // TODO add notice if no config files are found
       },

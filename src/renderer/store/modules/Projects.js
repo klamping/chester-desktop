@@ -9,6 +9,15 @@ const mutations = {
   add (state, project) {
     state.all = [...state.all, project];
   },
+  update (state, project) {
+    // overwrite
+    state.all = state.all.map(p => {
+      if (p._id === project._id) {
+        return project
+      }
+      return p
+    })
+  },
   remove (state, projectId) {
     state.all = state.all.filter(p => p._id !== projectId)
   },
@@ -27,6 +36,18 @@ const actions = {
         }
         commit('add', newDoc);
         resolve(newDoc);
+      });
+    })
+  },
+  updateProject ({ commit }, project) {
+    // todo validate data
+    return new Promise((resolve, reject) => {
+      db.update({ _id: project._id }, project, function (err, numReplaced) {
+        if (err) {
+          reject(err);
+        }
+        commit('update', project);
+        resolve(numReplaced);
       });
     })
   },

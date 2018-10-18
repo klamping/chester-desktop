@@ -57,7 +57,7 @@
       this.findConfigs();
     },
     watch: {
-      'project._id': 'findConfigs'
+      'project.path': 'findConfigs'
     },
     methods: {
       findConfigs () {

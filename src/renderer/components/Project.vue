@@ -7,8 +7,12 @@
     <template v-if="project">
       <Layout class="project-container">
         <Header class="project-header">
-          <h1>{{project.name}}</h1>
-          <Button @click="updatePath()" type="text" class="project-path">{{project.path}}</Button>
+          <div class="project-info">
+            <h1>
+              {{project.name}}
+            </h1>
+            <EditProject />
+          </div>
 
           <div class="run-buttons" v-if="configsLoaded">
             <Tooltip placement="bottom" content="(Ctrl+r)">
@@ -16,10 +20,6 @@
             </Tooltip>
             <Button v-on:click="stopTest" type="success" v-bind:disabled="!testRunning">Stop Tests</Button>
           </div>
-
-          <Tooltip placement="left" content="Delete this project?" class="delete">
-            <Button v-on:click="deleteProject" type="text" icon="trash-a" />
-          </Tooltip>
         </Header>
         <Content class="project-content">
           <div class="aux-content">
@@ -78,30 +78,18 @@
     background: #fff;
     box-shadow: 0 2px 3px 2px rgba(0,0,0,.1);
     display: flex;
-    align-items: baseline;
-    padding-left: 5em;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem 0 5em;
     z-index: 2;
     position: relative;
   }
-  .delete {
-    position: absolute;
-    right: 13px;
-    top: 13px;
-    padding: 0;
-    line-height: 1;
+  .project-header .project-info {
+    display: flex;
+    align-items: center;
   }
-  .delete button {
-    color: #fe5f55;
-    padding: 0 10px;
-    font-size: 2em;
-  }
-  .delete button:hover,
-  .delete button:focus {
-    color: #fff;
-    background: #ff0000;
-  }
-  .delete .ivu-btn .ivu-icon+span {
-    margin: 0;
+  .project-header .project-info .ivu-btn {
+    margin-left: 1rem;
   }
   .project-content {
     display: flex;
@@ -151,6 +139,7 @@
   import fs from 'fs';
   import path from 'path';
   import FileView from './FileView';
+  import EditProject from './EditProject';
   import ConfigFiles from './ConfigFiles';
   import SpecFiles from './SpecFiles';
   import ConfigOption from './ConfigOption';
@@ -163,7 +152,7 @@
 
   export default {
     name: 'project',
-    components: { FileView, Term, ConfigFiles, SpecFiles, ConfigOption, Capabilities, EnvVars },
+    components: { EditProject, FileView, Term, ConfigFiles, SpecFiles, ConfigOption, Capabilities, EnvVars },
 
     data () {
       return {
@@ -264,22 +253,6 @@
       stopTest () {
         // this.testRunning = false;
         this.$electron.ipcRenderer.send('send-sigint');
-      },
-      deleteProject () {
-        this.$store
-          .dispatch('remove', this.project._id)
-          .then(() => {
-            this.$router.push({ path: '/' });
-          });
-      },
-      updatePath () {
-        const path = this.$electron.remote.dialog.showOpenDialog({
-          properties: ['openDirectory']
-        });
-
-        if (path) {
-          this.$store.dispatch('updateProject', { path: path[0] });
-        }
       }
     }
   }
