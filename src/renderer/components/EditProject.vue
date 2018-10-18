@@ -15,6 +15,16 @@
           <Button type="ghost" required @click="updatePath()">{{updatedProject.path}}</Button>
           <p>This should be the folder containing your <code>package.json</code> file</p>
         </FormItem>
+        <FormItem label="Test Command">
+          <Input type="text" required v-model="updatedProject.command" />
+          <div class="examples">
+            <p>Examples:</p>
+            <ul>
+              <li><code>npx wdio</code></li>
+              <li><code>npm test</code></li>
+            </ul>
+          </div>
+        </FormItem>
 
         <Poptip
             confirm
@@ -110,5 +120,21 @@
   }
   .delete .ivu-btn .ivu-icon+span {
     margin: 0;
+  }
+  .examples {
+    background: #fafafa;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: .5em 1em;
+    margin-top: .5em;
+    line-height: 1.5;
+  }
+  .examples ul {
+    margin: 0;
+    padding: 0;
+  }
+  .examples li {
+    margin: 0 0 0 2em;
+    padding: 0;
   }
 </style>

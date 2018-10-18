@@ -16,6 +16,16 @@
           <Button type="ghost" required v-model="path" @click="addPath()">{{path || 'Choose Folder'}}</Button>
           <p>This should be the folder containing your <code>package.json</code> file</p>
         </FormItem>
+        <FormItem label="Test Command">
+          <Input type="text" required v-model="command" />
+          <div class="examples">
+            <p>Examples:</p>
+            <ul>
+              <li><code>npx wdio</code></li>
+              <li><code>npm test</code></li>
+            </ul>
+          </div>
+        </FormItem>
       </Form>
     </Modal>
   </DropdownItem>
@@ -27,7 +37,8 @@
       return {
         addingProject: false,
         name: '',
-        path: ''
+        path: '',
+        command: './node_modules/.bin/wdio'
       }
     },
     methods: {
@@ -93,5 +104,21 @@
   .ivu-layout-sider-collapsed .add-project span {
     width: 0px;
     transition: width .2s ease;
+  }
+  .examples {
+    background: #fafafa;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: .5em 1em;
+    margin-top: .5em;
+    line-height: 1.5;
+  }
+  .examples ul {
+    margin: 0;
+    padding: 0;
+  }
+  .examples li {
+    margin: 0 0 0 2em;
+    padding: 0;
   }
 </style>

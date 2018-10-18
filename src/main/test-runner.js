@@ -4,7 +4,7 @@ const pty = require('node-pty');
 // const os = require('os');
 // const spawn = require('cross-spawn');
 const fixPath = require('fix-path');
-const which = require('which')
+// const which = require('which')
 
 fixPath();
 
@@ -52,9 +52,16 @@ ipc.on('run-test', function (event, cwd, envVars, command, args) {
     })
   }
 
-  const resolved = which.sync('node', {nothrow: true});
+  const splitCommand = command.split(' ');
 
-  childProcess = pty.spawn(resolved, [command, ...args], {
+  let shiftedArgs = args;
+  if (splitCommand.length > 1) {
+    shiftedArgs = [...splitCommand.splice(1), ...args]
+  }
+
+  // const resolved = which.sync('node', {nothrow: true});
+
+  childProcess = pty.spawn(splitCommand[0], shiftedArgs, {
     cwd,
     env
   })

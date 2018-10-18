@@ -36,6 +36,9 @@
             <ConfigFiles/>
 
             <template v-if="configsLoaded">
+              <FormItem label="Test Command">
+                <Input type="text" v-model="customCommand" />
+              </FormItem>
               <FormItem label="Spec Files">
                 <SpecFiles/>
               </FormItem>
@@ -160,6 +163,7 @@
         error: null,
         testRunning: false,
         configFile: null,
+        customCommand: '',
         specs: [],
         logLevelOptions: ['silent', 'verbose', 'command', 'data', 'result', 'error']
       }
@@ -212,9 +216,11 @@
         this.$store.dispatch('setProject', this.$route.params.id)
           .then((project) => {
             iView.LoadingBar.finish();
+
             if (!project) {
               this.$router.push({ path: '/' });
             } else {
+              this.customCommand = this.project.command;
               // check to ensure the database for the project is right
               if (!project.customConfigs) {
                 // if no custom configs, set up an array
@@ -247,8 +253,7 @@
       runTest () {
         this.testRunning = true;
         const tempConfigPath = this.generateConfigFile();
-        const command = path.join('node_modules', 'webdriverio', 'build', 'lib', 'cli.js');
-        this.$electron.ipcRenderer.send('run-test', this.project.path, this.envVars, command, [tempConfigPath]);
+        this.$electron.ipcRenderer.send('run-test', this.project.path, this.envVars, this.customCommand, [tempConfigPath]);
       },
       stopTest () {
         // this.testRunning = false;
