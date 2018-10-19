@@ -2,7 +2,8 @@
 
 A desktop helper app for running WebdriverIO tests
 
-![Screenshot preview](https://images2.imgbox.com/61/2e/1wBLvxMX_o.png)
+![Screenshot preview](https://user-images.githubusercontent.com/706039/47241228-8ee6df00-d3b0-11e8-8882-4b27f074ec59.png)
+
 
 ## Download
 
