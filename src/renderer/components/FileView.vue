@@ -65,7 +65,7 @@
       this.findFiles();
     },
     watch: {
-      'project': 'findFiles'
+      'project.path': 'findFiles'
     },
     methods: {
       findFiles () {

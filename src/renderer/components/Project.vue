@@ -39,6 +39,9 @@
               <FormItem label="Test Command">
                 <Input type="text" v-model="customCommand" />
               </FormItem>
+              <FormItem label="Env. Variables">
+                <EnvVars/>
+              </FormItem>
               <FormItem label="Spec Files">
                 <SpecFiles/>
               </FormItem>
@@ -50,9 +53,6 @@
               </FormItem>
               <FormItem label="Log Level">
                 <ConfigOption config="logLevel" :options="logLevelOptions" type="radio" />
-              </FormItem>
-              <FormItem label="Env. Variables">
-                <EnvVars/>
               </FormItem>
               <FormItem label="Bail">
                 <ConfigOption config="bail" />
@@ -253,7 +253,18 @@
       runTest () {
         this.testRunning = true;
         const tempConfigPath = this.generateConfigFile();
-        this.$electron.ipcRenderer.send('run-test', this.project.path, this.envVars, this.customCommand, [tempConfigPath]);
+        let envVars = '';
+        if (Array.isArray(this.project.envVars)) {
+          envVars = this.project.envVars.reduce(function (result, envVar) {
+            if (envVar.isEnabled && envVar.name.length > 0 && envVar.value.length > 0) {
+              result += `${envVar.name}=${envVar.value} `;
+            }
+
+            return result;
+          }, '')
+        }
+        console.log('Project.vue :264', envVars);
+        this.$electron.ipcRenderer.send('run-test', this.project.path, envVars, this.customCommand, [tempConfigPath]);
       },
       stopTest () {
         // this.testRunning = false;

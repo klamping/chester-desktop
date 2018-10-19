@@ -44,11 +44,13 @@ ipc.on('run-test', function (event, cwd, envVars, command, args) {
   const env = { ...process.env };
 
   if (envVars.length > 0) {
-    const splitVars = envVars.split(' ');
+    const splitVars = envVars.trim().split(' ');
 
     splitVars.forEach(envVar => {
-      const separated = envVar.split('=');
-      env[separated[0]] = separated[1];
+      if (envVar.length > 0) {
+        const separated = envVar.split('=');
+        env[separated[0]] = separated[1];
+      }
     })
   }
 
