@@ -1,4 +1,4 @@
-# Chester
+# Chester Desktop App
 
 A desktop helper app for running WebdriverIO tests
 
