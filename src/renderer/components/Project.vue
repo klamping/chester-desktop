@@ -13,13 +13,6 @@
             </h1>
             <EditProject />
           </div>
-
-          <div class="run-buttons" v-if="configsLoaded">
-            <Tooltip placement="bottom" content="(Ctrl+r)">
-              <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Tests</Button>
-            </Tooltip>
-            <Button v-on:click="stopTest" type="success" v-bind:disabled="!testRunning">Stop Tests</Button>
-          </div>
         </Header>
         <Content class="project-content">
           <div class="aux-content">
@@ -62,6 +55,12 @@
           </Form>
         </Content>
       </Layout>
+      <div class="run-buttons" v-if="configsLoaded">
+        <Tooltip placement="bottom" content="(Ctrl+r)">
+          <Button v-on:click="runTest" type="success" v-bind:disabled="testRunning">Run Tests</Button>
+        </Tooltip>
+        <Button v-on:click="stopTest" type="success" v-bind:disabled="!testRunning">Stop Tests</Button>
+      </div>
       <Term></Term>
     </template>
   </div>
@@ -93,6 +92,12 @@
   }
   .project-header .project-info .ivu-btn {
     margin-left: 1rem;
+  }
+  .run-buttons {
+    position: absolute;
+    z-index: 10;
+    top: 18px;
+    right: 10px;
   }
   .project-content {
     display: flex;

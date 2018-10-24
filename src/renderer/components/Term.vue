@@ -146,12 +146,15 @@
   .clear-logs.ivu-btn {
     position: absolute;
     top: 1em;
-    right: 5px;
+    right: 10px;
     z-index: 20;
     opacity: .5;
     background: #555;
     color: #fff;
     transition: all 0.25s ease-in-out;
+  }
+  .terminal-container.expanded .clear-logs.ivu-btn {
+    top: 55px;
   }
   .clear-logs.ivu-btn:hover,
   .clear-logs.ivu-btn:focus {
