@@ -68,7 +68,6 @@
     "electron-updater": "^3.1.1",
     "fix-path": "^2.1.0",
     "iview": "^2.14.2",
-    "mousetrap": "^1.6.2",
     "nedb": "^1.8.0",
     "node-pty": "^0.7.6",
     "recursive-readdir": "^2.2.2",

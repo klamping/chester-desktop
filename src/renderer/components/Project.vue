@@ -155,7 +155,6 @@
   import EnvVars from './EnvVars';
   import iView from 'iview';
   import { mapState, mapGetters } from 'vuex';
-  import Mousetrap from 'mousetrap';
   import Term from './Term';
 
   export default {
@@ -200,12 +199,11 @@
         }
       });
 
-      // listen for ctrl/cmd + r
-      Mousetrap.bind('ctrl+r', (e) => {
+      this.$electron.ipcRenderer.on('run-test', (event) => {
         if (this.configsLoaded && !this.testRunning) {
           this.runTest();
         }
-      });
+      })
     },
 
     watch: {
@@ -268,7 +266,6 @@
             return result;
           }, '')
         }
-        console.log('Project.vue :264', envVars);
         this.$electron.ipcRenderer.send('run-test', this.project.path, envVars, this.customCommand, [tempConfigPath]);
       },
       stopTest () {

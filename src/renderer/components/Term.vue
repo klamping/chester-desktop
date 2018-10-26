@@ -69,6 +69,13 @@
         this.$electron.ipcRenderer.send('xterm', data);
       });
 
+      this.term.attachCustomKeyEventHandler(function (e) {
+        if (e.ctrlKey && e.key === 'r') {
+          // allow ctrl+r to pass through to run command listener
+          return false;
+        }
+      });
+
       this.$electron.ipcRenderer.on('test-log', (e, log) => {
         this.term.write(log)
       });
