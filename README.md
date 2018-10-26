@@ -1,5 +1,7 @@
 # Chester Desktop App
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/klamping/chester-desktop.svg)](https://greenkeeper.io/)
+
 A desktop helper app for running WebdriverIO tests
 
 ![Screenshot preview](https://user-images.githubusercontent.com/706039/47241228-8ee6df00-d3b0-11e8-8882-4b27f074ec59.png)
