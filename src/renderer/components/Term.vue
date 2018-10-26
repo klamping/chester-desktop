@@ -79,7 +79,7 @@
       });
 
       this.$electron.ipcRenderer.on('test-status', (e, status, type) => {
-        this.term.writeln(`---- ${status} ----`)
+        this.term.writeln(`──────────────── ${status} ────────────────`)
         this.$Notice[type]({
           title: status
         });
