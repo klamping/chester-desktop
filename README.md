@@ -11,6 +11,10 @@ An alpha version is availabe for [download](https://github.com/klamping/chester-
 
 Please report bugs and request features on [the issues page](https://github.com/klamping/chester-desktop/issues).
 
+## Video Walkthrough
+
+[Watch me talk through Chester Desktop and how you can utilize it](https://www.youtube.com/watch?v=ZK8vWvcy2w0)
+
 ### Run the dev version locally
 
 This is an electron-vue project, so if you have NodeJS installed, you're able to run this program locally in dev mode. 
