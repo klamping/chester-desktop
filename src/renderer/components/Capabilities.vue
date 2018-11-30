@@ -71,7 +71,7 @@
   .card {
     flex: 1 0 calc(25% - 5px);
     margin: 5px 5px 0 0;
-    max-width: calc(25% - 5px);
+    max-width: calc(50% - 5px);
   }
   .card .ivu-card-extra {
     top: 9px;

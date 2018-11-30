@@ -76,9 +76,7 @@ const template = [
         accelerator: 'Ctrl+R',
         click (item, focusedWindow) {
           if (focusedWindow) {
-            console.log('menu.js :78', focusedWindow.webContents.send);
             focusedWindow.webContents.send('run-test')
-            console.log('menu.js :79');
           }
         }
       }

@@ -13,7 +13,7 @@
         <Button type="ghost" @click="handleRemove(index)" class="var-delete">Delete</Button>
       </div>
     </FormItem>
-    <Button type="dashed" long @click="handleAdd" icon="plus-round">Add Variable</Button>
+    <Button long @click="handleAdd" icon="plus-round">Add Variable</Button>
   </div>
 </template>
 

@@ -19,6 +19,7 @@
   import * as fit from 'xterm/lib/addons/fit/fit';
   import * as fullscreen from 'xterm/lib/addons/fullscreen/fullscreen';
   import * as winptyCompat from 'xterm/lib/addons/winptyCompat/winptyCompat';
+  import * as Mousetrap from 'mousetrap'
   import 'xterm/dist/xterm.css'
 
   export default {
@@ -69,10 +70,12 @@
         this.$electron.ipcRenderer.send('xterm', data);
       });
 
-      this.term.attachCustomKeyEventHandler(function (e) {
+      this.term.attachCustomKeyEventHandler((e) => {
         if (e.ctrlKey && e.key === 'r') {
           // allow ctrl+r to pass through to run command listener
           return false;
+        } else if (e.keyCode === 27) {
+          this.toggleFullscreen(false)
         }
       });
 
@@ -86,6 +89,7 @@
       });
 
       this.$electron.ipcRenderer.on('test-status', (e, status, type) => {
+        // this.term.write('printf \x1Bc');
         this.term.writeln(`──────────────── ${status} ────────────────`)
         this.$Notice[type]({
           title: status
@@ -96,8 +100,17 @@
       clearLogs () {
         this.term.clear();
       },
-      toggleFullscreen () {
-        this.terminalExpanded = !this.terminalExpanded;
+      toggleFullscreen (expand) {
+        this.terminalExpanded = typeof expand === 'boolean' ? expand : !this.terminalExpanded;
+
+        if (this.terminalExpanded) {
+          Mousetrap.bind('esc', () => {
+            this.toggleFullscreen(false)
+          })
+        } else {
+          Mousetrap.unbind('esc')
+        }
+
         this.term.toggleFullScreen(this.terminalExpanded);
         setTimeout(() => {
           this.term.fit();
@@ -135,14 +148,15 @@
   }
   .terminal-toggle.ivu-btn {
     position: absolute;
-    left: 50%;
+    left: calc(50% - 26px);
     bottom: calc(100% + 1px);
     padding: 3px 15px;
     border-bottom: 0;
     border-radius: 3px 3px 0 0;
     z-index: 20;
-    color: #ccc;
+    color: #aaa;
     transition: bottom 0.25s ease-in-out;
+    background: #f5f7f9;
   }
   .expanded .terminal-toggle.ivu-btn {
     bottom: 97%;
